@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/apiService';
-import { MapPin, Brain, Calendar, Clock, Smile, Coffee, Plane } from 'lucide-react';
+import { Building2, User2, MapPin, Brain, Heart, UtensilsCrossed, Plane, Timer, Briefcase } from 'lucide-react';
 
 const ProfileDetails = () => {
   const { user } = useAuth();
@@ -44,43 +44,69 @@ const ProfileDetails = () => {
     );
   }
 
+  const profileSections = [
+    { label: 'Role', value: userDetails.role, icon: <Briefcase className="w-5 h-5" /> },
+    { label: 'Bio', value: userDetails.profile_bio, icon: <User2 className="w-5 h-5" /> },
+    { label: 'Location', value: userDetails.location, icon: <MapPin className="w-5 h-5" /> },
+    { label: 'Skills', value: userDetails.skills, icon: <Brain className="w-5 h-5" /> },
+    { label: 'Interests', value: userDetails.interests, icon: <Heart className="w-5 h-5" /> },
+    { label: 'Favorite recipes', value: userDetails.favorite_recipes, icon: <UtensilsCrossed className="w-5 h-5" /> },
+    { label: 'I can recommend...', value: userDetails.recommendations, icon: <Plane className="w-5 h-5" /> },
+    { 
+      label: 'How long I have been with SUMM AI', 
+      value: `${userDetails.days_with_company} days`, 
+      icon: <Timer className="w-5 h-5" /> 
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-[#f5f7fc] p-6">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Column - User Details */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <div className="flex items-start gap-6">
-              <img
-                src={`/user_photos/${userDetails.first_name}.png`}
-                alt={userDetails.first_name}
-                className="w-24 h-24 rounded-full border-2 border-white shadow-sm object-cover"
-              />
-              <div>
-                <h1 className="text-2xl font-medium text-gray-900">
-                  {userDetails.first_name} {userDetails.last_name}
-                </h1>
-                <p className="text-gray-600">{userDetails.role}</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <MapPin className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-600">{userDetails.location}</span>
+          {/* Left Column - Profile Details */}
+          <div className="bg-white rounded-xl shadow-sm">
+            <div className="p-8 space-y-8">
+              {/* Header Section */}
+              <div className="flex items-start space-x-6">
+                <img
+                  src={`/user_photos/${userDetails.first_name}.png`}
+                  alt={userDetails.first_name}
+                  className="w-24 h-24 rounded-full object-cover border-2 border-white shadow-sm"
+                />
+                <div>
+                  <h1 className="text-2xl font-medium text-gray-900">
+                    {userDetails.first_name} {userDetails.last_name}
+                  </h1>
+                  <div className="flex items-center text-gray-600 mt-2">
+                    <Building2 className="w-4 h-4 mr-2" />
+                    At the office
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="mt-8 space-y-6">
-              <div>
-                <h2 className="text-lg font-medium text-gray-900 mb-3">Bio</h2>
-                <p className="text-gray-600">{userDetails.profile_bio}</p>
+              {/* Info Items */}
+              <div className="space-y-6">
+                {profileSections.map((section, index) => (
+                  <div key={index} className="flex items-start space-x-4 group">
+                    <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      {section.icon}
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm text-gray-500">{section.label}</div>
+                      <div className="text-gray-900 mt-1">{section.value}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              <div>
-                <h2 className="text-lg font-medium text-gray-900 mb-3">Office days</h2>
-                <div className="flex gap-2">
+              {/* Office Days */}
+              <div className="space-y-2">
+                <div className="text-sm text-gray-500">Office days</div>
+                <div className="flex flex-wrap gap-2">
                   {userDetails.office_days.map((day, index) => (
                     <div
                       key={index}
-                      className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600"
+                      className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-sm"
                     >
                       {day}
                     </div>
@@ -88,50 +114,26 @@ const ProfileDetails = () => {
                 </div>
               </div>
 
-              <div>
-                <h2 className="text-lg font-medium text-gray-900 mb-3">Skills</h2>
+              {/* Ask me about */}
+              <div className="space-y-2">
+                <div className="text-sm text-gray-500">Ask me about</div>
                 <div className="flex flex-wrap gap-2">
-                  {userDetails.skills.split(',').map((skill, index) => (
+                  {['Translation', 'Training for Marathon', 'Erasmus'].map((topic, index) => (
                     <div
                       key={index}
-                      className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm"
+                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm"
                     >
-                      {skill.trim()}
+                      {topic}
                     </div>
                   ))}
                 </div>
-              </div>
-
-              <div>
-                <h2 className="text-lg font-medium text-gray-900 mb-3">Interests</h2>
-                <div className="flex flex-wrap gap-2">
-                  {userDetails.interests.split(',').map((interest, index) => (
-                    <div
-                      key={index}
-                      className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-sm"
-                    >
-                      {interest.trim()}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h2 className="text-lg font-medium text-gray-900 mb-3">Favorite recipes</h2>
-                <p className="text-gray-600">{userDetails.favorite_recipes}</p>
-              </div>
-
-              <div>
-                <h2 className="text-lg font-medium text-gray-900 mb-3">I can recommend...</h2>
-                <p className="text-gray-600">{userDetails.recommendations}</p>
               </div>
             </div>
           </div>
 
-          {/* Right Column - MBTI and Stats */}
+          {/* Right Column - MBTI */}
           <div className="space-y-6">
-            {/* MBTI Section */}
-            <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="bg-white rounded-xl shadow-sm p-6">
               <img 
                 src="/profile_right.png" 
                 alt="MBTI Profile" 
