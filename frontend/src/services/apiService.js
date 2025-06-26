@@ -52,6 +52,8 @@ export const apiService = {
 
   // Employee endpoints
   getEmployees: () => api.get('/employees/'),
+  getUserDetails: (userId) => api.get(`/user-details/${userId}/`),
+  getCurrentUserDetails: () => api.get('/user-details/me/'),
 };
 
 export default api; 
