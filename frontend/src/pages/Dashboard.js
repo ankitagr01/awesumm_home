@@ -277,7 +277,9 @@ const Dashboard = () => {
               <h2 className="text-lg font-medium text-gray-900 mb-6">Co-workers</h2>
               <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-gray-100">
                 <div className="flex gap-8 min-w-max px-2">
-                  {employees.map((employee) => {
+                  {employees
+                    .filter(employee => employee.id !== user.id) // Filter out the logged-in user
+                    .map((employee) => {
                     const statusMap = {
                       green: 'online',
                       yellow: 'away',
