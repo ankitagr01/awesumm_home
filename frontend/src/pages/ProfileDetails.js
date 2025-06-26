@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/apiService';
-import { Building2, User2, MapPin, Brain, Heart, UtensilsCrossed, Plane, Timer, Briefcase, Bell, Home, Search, User, LogOut } from 'lucide-react';
+import { Building2, User2, MapPin, Brain, Heart, UtensilsCrossed, Plane, Timer, Briefcase, Bell, Home, Search, User, LogOut, Pencil } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 
 const ProfileDetails = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/auth');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -76,7 +85,10 @@ const ProfileDetails = () => {
             className="w-6 h-6 text-gray-400 cursor-pointer hover:text-gray-600" 
             onClick={() => navigate('/profile')}
           />
-          <LogOut className="w-6 h-6 text-gray-400 cursor-pointer hover:text-gray-600" />
+          <LogOut 
+            className="w-6 h-6 text-gray-400 cursor-pointer hover:text-gray-600" 
+            onClick={handleLogout}
+          />
         </div>
       </div>
 
@@ -85,7 +97,12 @@ const ProfileDetails = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left Column - User Details */}
-            <div className="bg-white rounded-lg p-8 shadow-sm">
+            <div className="bg-white rounded-lg p-8 shadow-sm relative">
+              {/* Edit icon */}
+              <div className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 cursor-pointer">
+                <Pencil className="w-5 h-5" />
+              </div>
+
               {/* Header with photo and name */}
               <div className="flex items-start gap-6 mb-12">
                 <img

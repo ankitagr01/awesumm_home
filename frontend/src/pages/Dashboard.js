@@ -12,9 +12,18 @@ const USER_ICON_STYLES = {
 };
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [employees, setEmployees] = useState([]);
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/auth');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -69,7 +78,10 @@ const Dashboard = () => {
             className="w-6 h-6 text-gray-400 cursor-pointer hover:text-gray-600" 
             onClick={() => navigate('/profile')}
           />
-          <LogOut className="w-6 h-6 text-gray-400 cursor-pointer hover:text-gray-600" />
+          <LogOut 
+            className="w-6 h-6 text-gray-400 cursor-pointer hover:text-gray-600" 
+            onClick={handleLogout}
+          />
         </div>
       </div>
 

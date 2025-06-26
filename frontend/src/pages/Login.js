@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Login = ({ switchToSignup }) => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ const Login = ({ switchToSignup }) => {
   const [error, setError] = useState('');
 
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -25,7 +27,7 @@ const Login = ({ switchToSignup }) => {
 
     try {
       await login(formData);
-      // Success handled by auth context
+      navigate('/'); // Navigate to dashboard after successful login
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'Login failed';
       const errorDetails = error.response?.data?.details || '';
