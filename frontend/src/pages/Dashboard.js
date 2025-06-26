@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, MapPin, Home, Plane, HeartPulse } from 'lucide-react';
+import { Bell, MapPin, Home, Plane, HeartPulse, LogOut, User, Search } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/apiService';
+import { useNavigate, Link } from 'react-router-dom';
 
 // Common styles for user icons
 const USER_ICON_STYLES = {
@@ -13,6 +14,7 @@ const USER_ICON_STYLES = {
 const Dashboard = () => {
   const { user } = useAuth();
   const [employees, setEmployees] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -42,22 +44,32 @@ const Dashboard = () => {
       {/* Header */}
       <div className="flex justify-between items-center p-6 bg-white">
         <div className="flex items-center gap-4">
-          <img
-            src="/api/placeholder/40/40"
-            alt="Profile"
-            className="w-10 h-10 rounded-full"
-          />
+          <Link to="/" className="flex items-center">
+            <img
+              src="/co_loop_logo.png"
+              alt="Co Loop Logo"
+              className="h-10 w-auto cursor-pointer"
+            />
+          </Link>
           <div>
-            <h1 className="text-xl font-medium text-gray-900">
-              Welcome Back, <span className="text-gray-900">{user?.forename || 'Sophie'}</span> 
+            <h1 className="text-xl font-medium flex items-center">
+              Welcome back, {user?.first_name}
               <span className="ml-2">👋</span>
             </h1>
-            <p className="text-sm text-gray-500">Wednesday 5, July 2025</p>
+            <p className="text-sm text-gray-500">Friday 27, June 2025</p>
           </div>
         </div>
-        <div className="relative">
-          <Bell className="w-6 h-6 text-gray-400 cursor-pointer" />
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+        <div className="flex items-center gap-4">
+          <Search className="w-6 h-6 text-gray-400 cursor-pointer hover:text-gray-600" />
+          <div className="relative">
+            <Bell className="w-6 h-6 text-gray-400 cursor-pointer hover:text-gray-600" />
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+          </div>
+          <User 
+            className="w-6 h-6 text-gray-400 cursor-pointer hover:text-gray-600" 
+            onClick={() => navigate('/profile')}
+          />
+          <LogOut className="w-6 h-6 text-gray-400 cursor-pointer hover:text-gray-600" />
         </div>
       </div>
 
@@ -267,7 +279,7 @@ const Dashboard = () => {
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-700">Web Plugin</span>
+                    <span className="text-sm text-gray-700">Swimlanes Vertical (Chris)</span>
                     <span className="text-sm text-gray-500">60%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -277,7 +289,7 @@ const Dashboard = () => {
                 
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-700">Translation Tool</span>
+                    <span className="text-sm text-gray-700">Magic Translation Tool (Alex)</span>
                     <span className="text-sm text-gray-500">50%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -287,8 +299,8 @@ const Dashboard = () => {
                 
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-700">AuraFlows Demos</span>
-                    <span className="text-sm text-gray-500">872,400</span>
+                    <span className="text-sm text-gray-700">AuraFlows Demos (Gabriel)</span>
+                    <span className="text-sm text-gray-500">16/20</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div className="bg-green-400 h-2 rounded-full" style={{ width: '90%' }}></div>
@@ -324,8 +336,8 @@ const Dashboard = () => {
                 <div className="bg-blue-50 border-l-4 border-blue-400 p-3 rounded-r-lg">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="text-sm font-medium text-gray-900">Digital Marketing</h4>
-                      <p className="text-xs text-gray-600">Brainstorming for the upcoming...</p>
+                      <h4 className="text-sm font-medium text-gray-900">Auraflow Demo call</h4>
+                      <p className="text-xs text-gray-600">Demo with Hamburg (Gabriel)...</p>
                     </div>
                     <span className="text-xs text-gray-500">09</span>
                   </div>
@@ -335,8 +347,8 @@ const Dashboard = () => {
                 <div className="bg-blue-50 border-l-4 border-blue-400 p-3 rounded-r-lg">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="text-sm font-medium text-gray-900">UI Development</h4>
-                      <p className="text-xs text-gray-600">A review for collecting new inputs...</p>
+                      <h4 className="text-sm font-medium text-gray-900">Workshop Script</h4>
+                      <p className="text-xs text-gray-600">Working demo (Ankit)...</p>
                     </div>
                     <span className="text-xs text-gray-500">10</span>
                   </div>
@@ -346,8 +358,8 @@ const Dashboard = () => {
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-r-lg">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="text-sm font-medium text-gray-900">Data Analysis</h4>
-                      <p className="text-xs text-gray-600">A review for collecting user feedback...</p>
+                      <h4 className="text-sm font-medium text-gray-900">Customer Success</h4>
+                      <p className="text-xs text-gray-600">Sucess story (Tobias)...</p>
                     </div>
                     <span className="text-xs text-gray-500">...</span>
                   </div>
