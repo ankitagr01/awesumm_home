@@ -49,6 +49,9 @@ export const apiService = {
   login: (credentials) => api.post('/auth/login/', credentials),
   logout: () => api.post('/auth/logout/'),
   getCurrentUser: () => api.get('/auth/me/'),
+
+  // Employee endpoints
+  getEmployees: () => api.get('/employees/'),
 };
 
 export default api; 

@@ -359,41 +359,47 @@ class UserDetailsViewSet(viewsets.ModelViewSet):
 # Additional employee endpoints for compatibility
 @api_view(['GET'])
 def get_employees(request):
-    """Get all employees with their details"""
+    """Get all employees with their details using Supabase client"""
     try:
-        users = User.objects.prefetch_related('details').all()
+        supabase = get_supabase_client()
+        
+        # Fetch all users from the 'users' table
+        users_response = supabase.table('users').select('id, forename, lastname, Email').execute()
+        
+        if not users_response.data:
+            return Response({'employees': [], 'count': 0, 'status': 'success'})
+            
+        users_data = users_response.data
+        user_ids = [user['id'] for user in users_data]
+        
+        # Fetch all user details from the 'user_details' table
+        details_response = supabase.table('user_details').select('*').in_('user_id', user_ids).execute()
+        details_data = {item['user_id']: item for item in details_response.data}
+        
+        # Combine the data
         employees_data = []
-        
-        for user in users:
+        for user in users_data:
+            details = details_data.get(user['id'], {})
             employee = {
-                'id': user.id,
-                'email': user.email,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'profile_picture': user.profile_picture,
-                'created_at': user.created_at,
-                'updated_at': user.updated_at,
+                'id': user.get('id'),
+                'email': user.get('Email'),
+                'first_name': user.get('forename'),
+                'last_name': user.get('lastname'),
+                'profile_picture': details.get('profile_picture'),
+                'role': details.get('role'),
+                'location': details.get('location'),
+                'profile_bio': details.get('profile_bio'),
+                'office_days': details.get('office_days'),
+                'workload_status': details.get('workload_status'),
+                'today_location': details.get('today_location'),
+                'skills': details.get('skills'),
+                'interests': details.get('interests'),
+                'favorite_recipes': details.get('favorite_recipes'),
+                'recommendations': details.get('recommendations'),
+                'days_with_company': details.get('days_with_company'),
             }
-            
-            # Add details if they exist
-            if hasattr(user, 'details'):
-                details = user.details
-                employee.update({
-                    'role': details.role,
-                    'location': details.location,
-                    'profile_bio': details.profile_bio,
-                    'office_days': details.office_days,
-                    'workload_status': details.workload_status,
-                    'today_location': details.today_location,
-                    'skills': details.skills,
-                    'interests': details.interests,
-                    'favorite_recipes': details.favorite_recipes,
-                    'recommendations': details.recommendations,
-                    'days_with_company': details.days_with_company,
-                })
-            
             employees_data.append(employee)
-        
+            
         return Response({
             'employees': employees_data,
             'count': len(employees_data),
@@ -401,6 +407,7 @@ def get_employees(request):
         })
         
     except Exception as e:
+        print(f"Error in get_employees: {str(e)}") # Enhanced logging
         return Response({
             'error': 'Failed to fetch employees',
             'details': str(e),
