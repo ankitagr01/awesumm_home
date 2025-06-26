@@ -5,8 +5,8 @@ import { apiService } from '../services/apiService';
 
 // Common styles for user icons
 const USER_ICON_STYLES = {
-  small: "w-8 h-8 rounded-full border-2 border-white shadow-sm object-cover",
-  medium: "w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover",
+  small: "w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover",
+  medium: "w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover",
   large: "w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover"
 };
 
@@ -75,176 +75,185 @@ const Dashboard = () => {
                 </div>
                 
                 {/* Office Floor Plan */}
-                <div className="relative w-full h-[600px] border-[5px] border-black rounded-lg overflow-hidden bg-white">
-                  {/* Rooms */}
-                  <div className="absolute top-0 left-0 w-full h-[300px] border-r-[5px] border-black"></div>
-                  <div className="absolute top-[300px] left-0 w-full h-[300px] border-r-[5px] border-black"></div>
+                <div className="relative w-full h-[400px] border-[3px] border-black rounded-lg overflow-hidden bg-white">
+                  {/* Desks with circular indicators */}
+                  {/* Top room desks */}
+                  <div className="absolute top-[30px] left-[30px] w-[80px] h-[90px] bg-gray-100 rounded-md">
+                  </div>
+                  <div className="absolute top-[30px] right-[30px] w-[90px] h-[80px] bg-gray-100 rounded-md">
+                  </div>
                   
-                  {/* Inner Wall */}
-                  <div className="absolute top-[250px] left-[400px] w-[5px] h-[50px] bg-black"></div>
+                  {/* Bottom room desks */}
+                  <div className="absolute top-[220px] left-[20px] w-[80px] h-[60px] bg-gray-100 rounded-md">
+                  </div>
+                  <div className="absolute top-[330px] left-[20px] w-[80px] h-[60px] bg-gray-100 rounded-md">
+                  </div>
+                  <div className="absolute top-[220px] left-[180px] w-[80px] h-[60px] bg-gray-100 rounded-md">
+                  </div>
+                  <div className="absolute top-[330px] left-[180px] w-[80px] h-[60px] bg-gray-100 rounded-md">
+                  </div>
+
+                  {/* Dotted line with circles */}
+                  <div className="absolute top-[200px] left-[20px] right-[20px] flex items-center">
+                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                    <div className="flex-1 border-b-2 border-dotted border-blue-400"></div>
+                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                    <div className="flex-1 border-b-2 border-dotted border-blue-400"></div>
+                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                  </div>
                   
-                  {/* Side Room */}
-                  <div className="absolute top-[300px] right-[-5px] w-[60px] h-[300px] border-[5px] border-l-0 border-black"></div>
-
-                  {/* Desks - Top Room */}
-                  <div className="absolute top-[40px] left-[30px] w-[80px] h-[120px] bg-gray-200"></div>
-                  <div className="absolute top-[40px] right-[30px] w-[120px] h-[80px] bg-gray-200"></div>
-
-                  {/* Desks - Bottom Room */}
-                  <div className="absolute top-[330px] left-[20px] w-[100px] h-[80px] bg-gray-200"></div>
-                  <div className="absolute top-[420px] left-[20px] w-[100px] h-[80px] bg-gray-200"></div>
-                  <div className="absolute top-[330px] left-[140px] w-[100px] h-[80px] bg-gray-200"></div>
-                  <div className="absolute top-[420px] left-[140px] w-[100px] h-[80px] bg-gray-200"></div>
-                  <div className="absolute top-[330px] left-[260px] w-[100px] h-[80px] bg-gray-200"></div>
-                  <div className="absolute top-[420px] left-[260px] w-[100px] h-[80px] bg-gray-200"></div>
-                  <div className="absolute top-[500px] left-[360px] w-[120px] h-[50px] bg-gray-200"></div>
-
-                  {/* Employee Photos - Top Section */}
-                  {atOfficeEmployees.slice(0, 2).map((employee, index) => {
+                  {/* Employee Photos */}
+                  {atOfficeEmployees.map((employee, index) => {
                     const positions = [
-                      { top: '70px', left: '40px' },  // Near top-left desk
-                      { top: '60px', right: '50px' }  // Near top-right desk
+                      { top: '60px', left: '50px' },     // Top left desk
+                      { top: '50px', right: '60px' },    // Top right desk
+                      { top: '240px', left: '40px' },    // Bottom left desk 1
+                      { top: '350px', left: '40px' },    // Bottom left desk 2
+                      { top: '240px', left: '200px' },   // Bottom center desk 1
+                      { top: '350px', left: '200px' },   // Bottom center desk 2
                     ];
-                    return (
-                      <img 
-                        key={employee.id}
-                        src={`/user_photos/${employee.first_name}.png`}
-                        alt={employee.first_name} 
-                        className={`absolute ${USER_ICON_STYLES.small} z-10`}
-                        style={positions[index]}
-                        onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/32/32" }}
-                      />
-                    );
-                  })}
 
-                  {/* Employee Photos - Bottom Section */}
-                  {atOfficeEmployees.slice(2).map((employee, index) => {
-                    const positions = [
-                      { top: '350px', left: '40px' },    // Near bottom-left1 desk
-                      { top: '440px', left: '40px' },    // Near bottom-left2 desk
-                      { top: '350px', left: '160px' },   // Near bottom-center1 desk
-                      { top: '440px', left: '160px' },   // Near bottom-center2 desk
-                      { top: '350px', left: '280px' },   // Near bottom-right1 desk
-                      { top: '440px', left: '280px' },   // Near bottom-right2 desk
-                      { top: '510px', left: '380px' }    // Near bottom-far-right desk
-                    ];
+                    const position = positions[index] || {
+                      top: `${240 + (index % 2) * 110}px`,
+                      left: `${40 + Math.floor(index / 2) * 160}px`
+                    };
+
                     return (
-                      <img 
+                      <div
                         key={employee.id}
-                        src={`/user_photos/${employee.first_name}.png`}
-                        alt={employee.first_name} 
-                        className={`absolute ${USER_ICON_STYLES.small} z-10`}
-                        style={positions[index] || { top: '350px', left: '40px' }}
-                        onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/32/32" }}
-                      />
+                        className="absolute z-10 transition-all duration-300 hover:scale-110"
+                        style={position}
+                      >
+                        <img
+                          src={`/user_photos/${employee.first_name}.png`}
+                          alt={employee.first_name}
+                          className={USER_ICON_STYLES.small}
+                          title={employee.first_name}
+                        />
+                      </div>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Statuses Column */}
+              {/* Right side sections */}
               <div className="space-y-4">
+                {/* On the road section */}
                 <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <MapPin className="w-5 h-5 text-orange-400" />
-                    <span className="font-medium text-gray-700">On the road</span>
-                  </div>
-                  <div className="flex -space-x-2 justify-end mt-2">
-                    {onRoadEmployees.map(employee => (
-                      <img 
-                        key={employee.id} 
-                        src={`/user_photos/${employee.first_name}.png`} 
-                        alt={employee.first_name} 
-                        className={USER_ICON_STYLES.small}
-                        onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/32/32" }} 
-                      />
-                    ))}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-orange-500" />
+                      <h2 className="text-lg font-medium text-gray-900">On the road</h2>
+                    </div>
+                    <div className="flex -space-x-3">
+                      {onRoadEmployees.map((employee) => (
+                        <img
+                          key={employee.id}
+                          src={`/user_photos/${employee.first_name}.png`}
+                          alt={employee.first_name}
+                          className={`${USER_ICON_STYLES.medium} hover:z-10`}
+                          title={employee.first_name}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
+
+                {/* Home Office section */}
                 <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <Home className="w-5 h-5 text-blue-400" />
-                    <span className="font-medium text-gray-700">Home Office</span>
-                  </div>
-                  <div className="flex -space-x-2 justify-end mt-2">
-                    {homeOfficeEmployees.map(employee => (
-                      <img 
-                        key={employee.id} 
-                        src={`/user_photos/${employee.first_name}.png`} 
-                        alt={employee.first_name} 
-                        className={USER_ICON_STYLES.small}
-                        onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/32/32" }} 
-                      />
-                    ))}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Home className="w-5 h-5 text-blue-500" />
+                      <h2 className="text-lg font-medium text-gray-900">Home Office</h2>
+                    </div>
+                    <div className="flex -space-x-3">
+                      {homeOfficeEmployees.map((employee) => (
+                        <img
+                          key={employee.id}
+                          src={`/user_photos/${employee.first_name}.png`}
+                          alt={employee.first_name}
+                          className={`${USER_ICON_STYLES.medium} hover:z-10`}
+                          title={employee.first_name}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
+
+                {/* Vacation section */}
                 <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <Plane className="w-5 h-5 text-purple-400" />
-                    <span className="font-medium text-gray-700">Vacation</span>
-                  </div>
-                  <div className="flex -space-x-2 justify-end mt-2">
-                    {vacationEmployees.map(employee => (
-                      <img 
-                        key={employee.id} 
-                        src={`/user_photos/${employee.first_name}.png`} 
-                        alt={employee.first_name} 
-                        className={USER_ICON_STYLES.small}
-                        onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/32/32" }} 
-                      />
-                    ))}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Plane className="w-5 h-5 text-purple-500" />
+                      <h2 className="text-lg font-medium text-gray-900">Vacation</h2>
+                    </div>
+                    <div className="flex -space-x-3">
+                      {vacationEmployees.map((employee) => (
+                        <img
+                          key={employee.id}
+                          src={`/user_photos/${employee.first_name}.png`}
+                          alt={employee.first_name}
+                          className={`${USER_ICON_STYLES.medium} hover:z-10`}
+                          title={employee.first_name}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
+
+                {/* Sick section */}
                 <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <HeartPulse className="w-5 h-5 text-red-400" />
-                    <span className="font-medium text-gray-700">Sick</span>
-                  </div>
-                  <div className="flex -space-x-2 justify-end mt-2">
-                    {sickEmployees.map(employee => (
-                      <img 
-                        key={employee.id} 
-                        src={`/user_photos/${employee.first_name}.png`} 
-                        alt={employee.first_name} 
-                        className={USER_ICON_STYLES.small}
-                        onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/32/32" }} 
-                      />
-                    ))}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <HeartPulse className="w-5 h-5 text-red-500" />
+                      <h2 className="text-lg font-medium text-gray-900">Sick</h2>
+                    </div>
+                    <div className="flex -space-x-3">
+                      {sickEmployees.map((employee) => (
+                        <img
+                          key={employee.id}
+                          src={`/user_photos/${employee.first_name}.png`}
+                          alt={employee.first_name}
+                          className={`${USER_ICON_STYLES.medium} hover:z-10`}
+                          title={employee.first_name}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             
             {/* Co-workers Section */}
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Co-workers</h2>
-              <div className="flex gap-6 overflow-x-auto pb-2">
-                {employees.map((employee) => {
-                  const statusMap = {
-                    green: 'online',
-                    yellow: 'away',
-                    red: 'offline',
-                  };
-                  const status = statusMap[employee.workload_status] || 'offline';
+            <div className="bg-white rounded-lg p-6 shadow-sm mt-6">
+              <h2 className="text-lg font-medium text-gray-900 mb-6">Co-workers</h2>
+              <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-gray-100">
+                <div className="flex gap-8 min-w-max px-2">
+                  {employees.map((employee) => {
+                    const statusMap = {
+                      green: 'online',
+                      yellow: 'away',
+                      red: 'offline',
+                    };
+                    const status = statusMap[employee.workload_status] || 'offline';
+                    const statusColor = status === 'online' ? 'bg-green-500' : 
+                                      status === 'away' ? 'bg-yellow-500' : 'bg-red-500';
 
-                  return (
-                    <div key={employee.id} className="flex flex-col items-center min-w-0">
-                      <div className="relative">
-                        <img
-                          src={`/user_photos/${employee.first_name}.png`}
-                          alt={employee.first_name}
-                          className={USER_ICON_STYLES.large}
-                          onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/48/48" }}
-                        />
-                        <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
-                          status === 'online' ? 'bg-green-500' : 
-                          status === 'away' ? 'bg-yellow-500' : 'bg-gray-400'
-                        }`}></div>
+                    return (
+                      <div key={employee.id} className="flex flex-col items-center gap-3">
+                        <div className="relative">
+                          <img
+                            src={`/user_photos/${employee.first_name}.png`}
+                            alt={employee.first_name}
+                            className={USER_ICON_STYLES.large}
+                          />
+                          <div className={`absolute bottom-1 right-1 w-3 h-3 rounded-full border-2 border-white ${statusColor}`}></div>
+                        </div>
+                        <span className="text-sm text-gray-600 whitespace-nowrap">{employee.first_name}</span>
                       </div>
-                      <span className="text-sm text-gray-700 mt-2 text-center">{employee.first_name}</span>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
