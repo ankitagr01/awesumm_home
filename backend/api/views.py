@@ -488,3 +488,80 @@ def create_employee(request):
             'details': str(e),
             'status': 'failed'
         }, status=500)
+
+@api_view(['GET'])
+def get_user_details(request, user_id):
+    """Get user details by user ID"""
+    try:
+        print(f"\nFetching details for user_id: {user_id}")
+        supabase = get_supabase_client()
+        
+        # Get user details from the users table
+        print("Fetching from users table...")
+        user_response = supabase.table('users').select('*').eq('id', user_id).execute()
+        print(f"Users table response: {user_response.data}")
+        
+        if not user_response.data:
+            print(f"No user found with ID: {user_id}")
+            return Response({
+                'error': 'User not found',
+                'status': 'failed'
+            }, status=404)
+            
+        user_data = user_response.data[0]
+        print(f"Found user: {user_data.get('forename')} {user_data.get('lastname')}")
+        
+        # Get additional details from user_details table
+        print("Fetching from user_details table...")
+        details_response = supabase.table('user_details').select('*').eq('user_id', user_id).execute()
+        print(f"User details response: {details_response.data}")
+        
+        details_data = details_response.data[0] if details_response.data else {}
+        
+        # If no details found, try to get basic info from employees endpoint
+        if not details_data:
+            print("No details found in user_details table, checking employees data...")
+            # Get all employees to find matching data
+            employees_response = supabase.table('employees').select('*').eq('user_id', user_id).execute()
+            if employees_response.data:
+                print("Found matching employee data")
+                details_data = employees_response.data[0]
+        
+        # Combine the data in the same format as get_employees
+        employee_data = {
+            'id': user_data.get('id'),
+            'email': user_data.get('Email'),
+            'first_name': user_data.get('forename'),
+            'last_name': user_data.get('lastname'),
+            'profile_picture': details_data.get('profile_picture'),
+            'role': details_data.get('role'),
+            'location': details_data.get('location'),
+            'profile_bio': details_data.get('profile_bio'),
+            'office_days': details_data.get('office_days', []),
+            'workload_status': details_data.get('workload_status'),
+            'today_location': details_data.get('today_location'),
+            'skills': details_data.get('skills'),
+            'interests': details_data.get('interests'),
+            'favorite_recipes': details_data.get('favorite_recipes'),
+            'recommendations': details_data.get('recommendations'),
+            'days_with_company': details_data.get('days_with_company'),
+        }
+        
+        # Check if we have minimum required data
+        if not employee_data['first_name'] or not employee_data['last_name']:
+            print("Missing required user data")
+            return Response({
+                'error': 'Incomplete user data',
+                'status': 'failed'
+            }, status=404)
+        
+        print(f"Successfully compiled user data: {employee_data}")
+        return Response(employee_data)
+        
+    except Exception as e:
+        print(f"Error in get_user_details: {str(e)}")
+        return Response({
+            'error': 'Failed to fetch user details',
+            'details': str(e),
+            'status': 'failed'
+        }, status=500)

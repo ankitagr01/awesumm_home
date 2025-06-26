@@ -25,6 +25,11 @@ const Dashboard = () => {
     }
   };
 
+  // Function to handle clicking on a user's photo
+  const handleUserClick = (userId) => {
+    navigate(`/profile/${userId}`);
+  };
+
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
@@ -47,6 +52,20 @@ const Dashboard = () => {
   const homeOfficeEmployees = getLocationBasedEmployees('Home Office');
   const vacationEmployees = getLocationBasedEmployees('Vacation');
   const sickEmployees = getLocationBasedEmployees('Sick');
+
+  // Update the user photo rendering to be clickable
+  const renderUserPhotos = (users, size = 'small') => {
+    return users.slice(0, 3).map((employee, index) => (
+      <img
+        key={employee.id}
+        src={employee.photo_url || '/default-avatar.png'}
+        alt={`${employee.forename} ${employee.lastname}`}
+        className={`${USER_ICON_STYLES[size]} cursor-pointer hover:opacity-80 transition-opacity`}
+        style={{ marginLeft: index > 0 ? '-0.75rem' : '0' }}
+        onClick={() => handleUserClick(employee.id)}
+      />
+    ));
+  };
 
   return (
     <div className="min-h-screen bg-[#f5f7fc] font-inter">
@@ -76,7 +95,7 @@ const Dashboard = () => {
           </div>
           <User 
             className="w-6 h-6 text-gray-400 cursor-pointer hover:text-gray-600" 
-            onClick={() => navigate('/profile')}
+            onClick={() => navigate(`/profile/${user.id}`)}
           />
           <LogOut 
             className="w-6 h-6 text-gray-400 cursor-pointer hover:text-gray-600" 
@@ -147,11 +166,12 @@ const Dashboard = () => {
                         key={employee.id}
                         className="absolute z-10 transition-all duration-300 hover:scale-110"
                         style={position}
+                        onClick={() => handleUserClick(employee.id)}
                       >
                         <img
                           src={`/user_photos/${employee.first_name}.png`}
                           alt={employee.first_name}
-                          className={USER_ICON_STYLES.small}
+                          className={`${USER_ICON_STYLES.small} cursor-pointer`}
                           title={employee.first_name}
                         />
                       </div>
@@ -175,8 +195,9 @@ const Dashboard = () => {
                           key={employee.id}
                           src={`/user_photos/${employee.first_name}.png`}
                           alt={employee.first_name}
-                          className={`${USER_ICON_STYLES.medium} hover:z-10`}
+                          className={`${USER_ICON_STYLES.medium} hover:z-10 cursor-pointer`}
                           title={employee.first_name}
+                          onClick={() => handleUserClick(employee.id)}
                         />
                       ))}
                     </div>
@@ -196,8 +217,9 @@ const Dashboard = () => {
                           key={employee.id}
                           src={`/user_photos/${employee.first_name}.png`}
                           alt={employee.first_name}
-                          className={`${USER_ICON_STYLES.medium} hover:z-10`}
+                          className={`${USER_ICON_STYLES.medium} hover:z-10 cursor-pointer`}
                           title={employee.first_name}
+                          onClick={() => handleUserClick(employee.id)}
                         />
                       ))}
                     </div>
@@ -217,8 +239,9 @@ const Dashboard = () => {
                           key={employee.id}
                           src={`/user_photos/${employee.first_name}.png`}
                           alt={employee.first_name}
-                          className={`${USER_ICON_STYLES.medium} hover:z-10`}
+                          className={`${USER_ICON_STYLES.medium} hover:z-10 cursor-pointer`}
                           title={employee.first_name}
+                          onClick={() => handleUserClick(employee.id)}
                         />
                       ))}
                     </div>
@@ -238,8 +261,9 @@ const Dashboard = () => {
                           key={employee.id}
                           src={`/user_photos/${employee.first_name}.png`}
                           alt={employee.first_name}
-                          className={`${USER_ICON_STYLES.medium} hover:z-10`}
+                          className={`${USER_ICON_STYLES.medium} hover:z-10 cursor-pointer`}
                           title={employee.first_name}
+                          onClick={() => handleUserClick(employee.id)}
                         />
                       ))}
                     </div>
@@ -264,7 +288,11 @@ const Dashboard = () => {
                                       status === 'away' ? 'bg-yellow-500' : 'bg-red-500';
 
                     return (
-                      <div key={employee.id} className="flex flex-col items-center gap-3">
+                      <div 
+                        key={employee.id} 
+                        className="flex flex-col items-center gap-3 cursor-pointer"
+                        onClick={() => handleUserClick(employee.id)}
+                      >
                         <div className="relative">
                           <img
                             src={`/user_photos/${employee.first_name}.png`}
@@ -323,17 +351,17 @@ const Dashboard = () => {
 
             {/* Today, Meetings */}
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h2 className="text-lg font-medium text-gray-900 mb-2">Today, Meetings</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-2">SUMM Calendar</h2>
               
               {/* Calendar Days */}
-              <div className="flex gap-2 mb-4">
-                {['03', '04', '05', '06', '07'].map((day, index) => (
+              <div className="grid grid-cols-5 gap-2 mb-4">
+                {['23', '24', '25', '26', '27'].map((day, index) => (
                   <div key={day} className={`flex flex-col items-center p-2 rounded-lg text-xs ${
-                    index === 2 ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'
+                    index === 4 ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'
                   }`}>
                     <span className="font-medium">{day}</span>
                     <span>{['Mon', 'Tue', 'Wed', 'Thu', 'Fri'][index]}</span>
-                    {index === 2 && <div className="flex gap-1 mt-1">
+                    {index === 4 && <div className="flex gap-1 mt-1">
                       <div className="w-1 h-1 bg-white rounded-full"></div>
                       <div className="w-1 h-1 bg-white rounded-full"></div>
                       <div className="w-1 h-1 bg-white rounded-full"></div>
@@ -348,7 +376,7 @@ const Dashboard = () => {
                 <div className="bg-blue-50 border-l-4 border-blue-400 p-3 rounded-r-lg">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="text-sm font-medium text-gray-900">Auraflow Demo call</h4>
+                      <h4 className="text-sm font-medium text-gray-900 text-left">Auraflow Demo call</h4>
                       <p className="text-xs text-gray-600">Demo with Hamburg (Gabriel)...</p>
                     </div>
                     <span className="text-xs text-gray-500">09</span>
@@ -359,7 +387,7 @@ const Dashboard = () => {
                 <div className="bg-blue-50 border-l-4 border-blue-400 p-3 rounded-r-lg">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="text-sm font-medium text-gray-900">Workshop Script</h4>
+                      <h4 className="text-sm font-medium text-gray-900 text-left">Workshop Script</h4>
                       <p className="text-xs text-gray-600">Working demo (Ankit)...</p>
                     </div>
                     <span className="text-xs text-gray-500">10</span>
@@ -370,7 +398,7 @@ const Dashboard = () => {
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-r-lg">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="text-sm font-medium text-gray-900">Customer Success</h4>
+                      <h4 className="text-sm font-medium text-gray-900 text-left">Customer Success</h4>
                       <p className="text-xs text-gray-600">Sucess story (Tobias)...</p>
                     </div>
                     <span className="text-xs text-gray-500">...</span>

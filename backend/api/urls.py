@@ -4,7 +4,6 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
-router.register(r'user-details', views.UserDetailsViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -18,4 +17,7 @@ urlpatterns = [
     path('auth/login/', views.login, name='login'),
     path('auth/logout/', views.logout, name='logout'),
     path('auth/me/', views.get_current_user, name='get_current_user'),
+    
+    # User details endpoints
+    path('users/<str:user_id>/details/', views.get_user_details, name='get_user_details'),
 ] 

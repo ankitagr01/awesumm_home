@@ -52,7 +52,7 @@ export const apiService = {
 
   // Employee endpoints
   getEmployees: () => api.get('/employees/'),
-  getUserDetails: (userId) => api.get(`/user-details/${userId}/`),
+  getUserDetails: (userId) => api.get(`/users/${userId}/details/`),
   getCurrentUserDetails: () => api.get('/user-details/me/'),
 };
 
