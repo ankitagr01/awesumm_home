@@ -6,6 +6,12 @@ from django.http import JsonResponse
 from django.conf import settings
 from supabase import create_client, Client
 import json
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from django.shortcuts import get_object_or_404
+from .models import User, UserDetails
+from rest_framework import serializers
+from django.db import models
 
 # Create your views here.
 
@@ -272,4 +278,181 @@ def get_current_user(request):
             'error': 'Failed to get user',
             'status': 'failed',
             'details': str(e)
+        }, status=500)
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name', 'profile_picture', 'created_at', 'updated_at']
+
+class UserDetailsSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = UserDetails
+        fields = ['id', 'user', 'role', 'location', 'profile_bio', 'office_days', 
+                 'workload_status', 'today_location', 'skills', 'interests', 
+                 'favorite_recipes', 'recommendations', 'days_with_company', 
+                 'created_at', 'updated_at']
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    
+    @action(detail=False, methods=['get'])
+    def with_details(self, request):
+        """Get all users with their details"""
+        users = User.objects.select_related('details').all()
+        data = []
+        
+        for user in users:
+            user_data = UserSerializer(user).data
+            try:
+                user_data['details'] = UserDetailsSerializer(user.details).data
+            except UserDetails.DoesNotExist:
+                user_data['details'] = None
+            data.append(user_data)
+        
+        return Response(data)
+
+class UserDetailsViewSet(viewsets.ModelViewSet):
+    queryset = UserDetails.objects.select_related('user').all()
+    serializer_class = UserDetailsSerializer
+    
+    @action(detail=False, methods=['get'])
+    def summary(self, request):
+        """Get summary statistics"""
+        total_users = UserDetails.objects.count()
+        workload_counts = UserDetails.objects.values('workload_status').annotate(count=models.Count('workload_status'))
+        
+        return Response({
+            'total_users': total_users,
+            'workload_distribution': {item['workload_status']: item['count'] for item in workload_counts},
+            'status': 'success'
+        })
+
+# Additional employee endpoints for compatibility
+@api_view(['GET'])
+def get_employees(request):
+    """Get all employees with their details"""
+    try:
+        users = User.objects.prefetch_related('details').all()
+        employees_data = []
+        
+        for user in users:
+            employee = {
+                'id': user.id,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'profile_picture': user.profile_picture,
+                'created_at': user.created_at,
+                'updated_at': user.updated_at,
+            }
+            
+            # Add details if they exist
+            if hasattr(user, 'details'):
+                details = user.details
+                employee.update({
+                    'role': details.role,
+                    'location': details.location,
+                    'profile_bio': details.profile_bio,
+                    'office_days': details.office_days,
+                    'workload_status': details.workload_status,
+                    'today_location': details.today_location,
+                    'skills': details.skills,
+                    'interests': details.interests,
+                    'favorite_recipes': details.favorite_recipes,
+                    'recommendations': details.recommendations,
+                    'days_with_company': details.days_with_company,
+                })
+            
+            employees_data.append(employee)
+        
+        return Response({
+            'employees': employees_data,
+            'count': len(employees_data),
+            'status': 'success'
+        })
+        
+    except Exception as e:
+        return Response({
+            'error': 'Failed to fetch employees',
+            'details': str(e),
+            'status': 'failed'
+        }, status=500)
+
+
+@api_view(['POST'])
+def create_employee(request):
+    """Create a new employee"""
+    try:
+        data = json.loads(request.body)
+        
+        # Required fields
+        email = data.get('email')
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
+        
+        if not email or not first_name or not last_name:
+            return Response({
+                'error': 'Email, first_name, and last_name are required',
+                'status': 'failed'
+            }, status=400)
+        
+        # Create username from first name and last name
+        username = f"{first_name.lower()}{last_name[0].lower()}"
+        
+        # Make username unique
+        original_username = username
+        counter = 1
+        while User.objects.filter(username=username).exists():
+            username = f"{original_username}{counter}"
+            counter += 1
+        
+        # Create user
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            password=data.get('password', 'defaultpassword123'),
+            profile_picture=data.get('profile_picture', '')
+        )
+        
+        # Create user details if provided
+        details_data = {
+            'user': user,
+            'role': data.get('role', ''),
+            'location': data.get('location', ''),
+            'profile_bio': data.get('profile_bio', ''),
+            'office_days': data.get('office_days', []),
+            'workload_status': data.get('workload_status', None),
+            'today_location': data.get('today_location', ''),
+            'skills': data.get('skills', ''),
+            'interests': data.get('interests', ''),
+            'favorite_recipes': data.get('favorite_recipes', ''),
+            'recommendations': data.get('recommendations', ''),
+            'days_with_company': data.get('days_with_company', None),
+        }
+        
+        UserDetails.objects.create(**details_data)
+        
+        return Response({
+            'message': 'Employee created successfully',
+            'employee': {
+                'id': user.id,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'username': user.username
+            },
+            'status': 'success'
+        })
+        
+    except Exception as e:
+        return Response({
+            'error': 'Failed to create employee',
+            'details': str(e),
+            'status': 'failed'
         }, status=500)

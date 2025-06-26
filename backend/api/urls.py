@@ -1,7 +1,15 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from . import views
 
+router = DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'user-details', views.UserDetailsViewSet)
+
 urlpatterns = [
+    path('', include(router.urls)),
+    path('employees/', views.get_employees, name='get_employees'),
+    path('employees/create/', views.create_employee, name='create_employee'),
     # Basic API endpoints
     path('status/', views.api_status, name='api_status'),
     

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+import dj_database_url
 
 # Load environment variables
 load_dotenv()
@@ -36,25 +37,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.contenttypes',  # Required for AbstractUser
+    'django.contrib.auth',          # Required for AbstractUser
     'rest_framework',
     'corsheaders',
-    'api',
+    'api',  # Only our custom app
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -82,12 +76,33 @@ WSGI_APPLICATION = 'employee_tracker.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Always use Supabase PostgreSQL
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL)
     }
-}
+else:
+    # Manual Supabase configuration
+    SUPABASE_URL = os.getenv('SUPABASE_URL', '')
+    SUPABASE_DB_PASSWORD = os.getenv('SUPABASE_DB_PASSWORD', '')
+    
+    # Extract project ID from Supabase URL
+    if SUPABASE_URL:
+        project_id = SUPABASE_URL.split('//')[1].split('.')[0]
+        
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': 'postgres',
+                'USER': 'postgres',
+                'PASSWORD': SUPABASE_DB_PASSWORD,
+                'HOST': f'db.{project_id}.supabase.co',
+                'PORT': '5432',
+            }
+        }
+    else:
+        raise ValueError("SUPABASE_URL and SUPABASE_DB_PASSWORD must be set in environment variables")
 
 
 # Password validation
@@ -130,6 +145,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom User Model (not using Django auth)
+# AUTH_USER_MODEL = 'api.User'
 
 # CORS settings for React frontend
 CORS_ALLOWED_ORIGINS = [

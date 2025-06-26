@@ -10,6 +10,9 @@ awesumm_home/
 ├── backend/                 # Django REST API
 │   ├── employee_tracker/    # Main Django project
 │   ├── api/                # Single Django app for all features
+│   │   ├── models.py       # User and UserDetails models (Supabase-aligned)
+│   │   ├── views.py        # API endpoints
+│   │   └── migrations/     # Database migrations
 │   ├── .env                # Environment variables (not in git)
 │   ├── example.env         # Environment template
 │   ├── requirements.txt    # Python dependencies
@@ -24,8 +27,61 @@ awesumm_home/
 │   └── package.json      # Node.js dependencies
 ├── plan.md               # Development roadmap
 ├── features.md           # Feature tracking
+├── user_details.csv      # Employee data source (used for initial population)
 └── README.md            # This file
 ```
+
+## 📊 Database Setup ✅ COMPLETE
+
+### Database Configuration
+- **Database System**: Supabase PostgreSQL (production-ready)
+- **Local SQLite**: Removed (clean Supabase-only setup)
+- **Tables**: 2 main tables with proper relationships
+- **Data Population**: 16 users + 15 detailed profiles populated from CSV
+
+### Database Schema
+```sql
+-- users table (matches Supabase Auth)
+users:
+  - id (UUID, primary key)
+  - created_at (timestamp)
+  - Email (text, matches Supabase capitalization)
+  - forename (text)
+  - lastname (text)
+
+-- user_details table (extended profile information)
+user_details:
+  - id (UUID, primary key)
+  - user_id (UUID, foreign key → users.id)
+  - role (text) - e.g., "CEO & Co-Founder", "CTO", "Head of Sales"
+  - location (text) - e.g., "Munich", "Remote"
+  - profile_bio (text)
+  - office_days (JSON array) - e.g., ["Monday", "Tuesday", "Wednesday"]
+  - workload_status (enum) - "green", "yellow", "red"
+  - today_location (text)
+  - skills (text)
+  - interests (text)
+  - favorite_recipes (text)
+  - recommendations (text)
+  - days_with_company (integer)
+  - created_at (timestamp, auto)
+  - updated_at (timestamp, auto-updated via trigger)
+```
+
+### Data Population Status
+- **16 Users** in `users` table with proper email format (firstname@summ-ai.com)
+- **15 User Details** in `user_details` table with rich profile information
+- **Sample Data Includes**:
+  - Flora Geske (CEO & Co-Founder, Munich, 899 days with company)
+  - Vanessa Theel (CRO & Co-Founder, Munich, yellow workload)
+  - Nicholas Wolf (CTO & Co-Founder, Munich, red workload)
+  - Various roles: Sales, Marketing, Operations, Development teams
+
+### Django Model Alignment
+- Custom `User` model matches exact Supabase schema (no Django auth conflicts)  
+- `UserDetails` model with comprehensive profile fields
+- Foreign key relationships properly configured
+- Removed unnecessary Django admin/auth dependencies for clean setup
 
 ## ⚠️ Security First
 
@@ -384,22 +440,18 @@ cd backend
 
 ### Backend (.env)
 ```bash
-# supabase
+# Supabase Configuration (Production Database)
+DATABASE_URL=postgresql://postgres.oyqjwgdfkkxwuseiohjj:your_encoded_password@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
 SUPABASE_URL=https://your-project-id.supabase.co
 SUPABASE_API_KEY=your_supabase_api_key_here
 SUPABASE_JWT_SECRET=your_jwt_secret_here
-SUPABASE_DB_PASSWORD=your_database_password_here
 
 # Debug mode - set to true to enable debug outputs, false to disable
 DEBUG_MODE=false
 
-# Database Configuration (Local PostgreSQL)
-DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/postgres
-DATABASE_ECHO=true
-
 # Application Configuration
 DOMAIN=localhost:8000
-ENVIRONMENT=development # will use local DB (for all other ENVIRONMENT values will switch to supabase remote DB)
+ENVIRONMENT=production  # Always use Supabase (no local SQLite)
 ```
 
 ### Frontend (.env)
@@ -466,23 +518,21 @@ npm test
 
 ## 📡 API Endpoints
 
-### Test Endpoints
-- `GET /api/hello/` - Basic connectivity test
-- `GET /api/status/` - API status information
-- `GET /api/test-users/` - Mock user data for development
+### Production Endpoints
+- `GET /api/status/` - API status and health check
 
-### Authentication (Planned)
-- `POST /api/auth/login/` - User login
-- `POST /api/auth/register/` - User registration
+### Authentication ✅ COMPLETE
+- `POST /api/auth/signup/` - User registration with Supabase
+- `POST /api/auth/login/` - User authentication
 - `POST /api/auth/logout/` - User logout
-- `GET /api/auth/me/` - Current user info
+- `GET /api/auth/me/` - Current user information
 
-### Profile Management (Planned)
+### Profile Management (Next Phase)
 - `GET /api/profiles/me/` - Get current user's profile
 - `PUT /api/profiles/me/` - Update current user's profile
 - `GET /api/profiles/{user_id}/` - Get any user's profile
 
-### Dashboard (Planned)
+### Dashboard (Next Phase)
 - `GET /api/dashboard/` - Get dashboard data with user status categories
 - `GET /api/users/search/?q={query}` - Search users by name
 
@@ -701,14 +751,19 @@ See `plan.md` and `features.md` for detailed development roadmap and feature tra
 
 ### Current Status
 - ✅ Project structure setup
-- ✅ Django REST API with test endpoints
-- ✅ React frontend with API communication
+- ✅ Django REST API with production endpoints
+- ✅ React frontend with API communication  
 - ✅ Environment configuration
 - ✅ CORS setup
-- 🔄 Supabase integration (next step)
-- ⏳ Authentication system
-- ⏳ Profile management  
-- ⏳ Dashboard features
+- ✅ Supabase database setup (2 tables: users + user_details)
+- ✅ Database populated with real employee data (16 users, 15 profiles)
+- ✅ Authentication system complete (signup, login, logout, session management)
+- ✅ Django models aligned with Supabase schema
+- ✅ Clean backend structure (removed unnecessary files/dependencies)
+- 🔄 Dashboard with real user data (next phase)
+- ⏳ Profile management API endpoints
+- ⏳ User search and filtering
+- ⏳ Profile editing functionality
 
 ## 🤝 Contributing
 
