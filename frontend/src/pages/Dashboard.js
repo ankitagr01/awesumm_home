@@ -304,6 +304,117 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+
+            {/* Chat Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              {/* General Chat */}
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h2 className="text-lg font-medium text-gray-900 mb-4">General</h2>
+                <div className="space-y-4">
+                  {/* Sample Messages */}
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                      <img
+                        src={`/user_photos/Alexander.png`}
+                        alt="Alex"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src = '/default-avatar.png';
+                        }}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-sm">Alex</span>
+                        <span className="text-xs text-gray-500">10:30 AM</span>
+                      </div>
+                      <p className="text-sm text-gray-700">Hey team! The cache for MTT is ready now. 🚀</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                      <img
+                        src={`/user_photos/Christian.png`}
+                        alt="Chris"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src = '/default-avatar.png';
+                        }}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-sm">Chris</span>
+                        <span className="text-xs text-gray-500">10:35 AM</span>
+                      </div>
+                      <p className="text-sm text-gray-700">Amazing! Even Swimlanes are working, great day!</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Message Input */}
+                <div className="mt-4 flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Type a message..."
+                    className="flex-1 rounded-lg border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button className="text-blue-500 text-sm hover:text-blue-600 transition-colors px-4">
+                    Send
+                  </button>
+                </div>
+              </div>
+
+              {/* Gym Buddies Chat */}
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h2 className="text-lg font-medium text-gray-900 mb-4">Gym-Buddies</h2>
+                <div className="space-y-4">
+                  {/* Sample Messages */}
+                  <div className="flex items-start gap-3">
+                    <img
+                      src={`/user_photos/Gabriel.png`}
+                      alt="Gabriel"
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-sm">Gabriel</span>
+                        <span className="text-xs text-gray-500">10:15 AM</span>
+                      </div>
+                      <p className="text-sm text-gray-700">Anyone up for a workout session at 6 PM? 💪</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <img
+                      src={`/user_photos/Tobias.png`}
+                      alt="Tobias"
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-sm">Tobias</span>
+                        <span className="text-xs text-gray-500">10:20 AM</span>
+                      </div>
+                      <p className="text-sm text-gray-700">Count me in! Let's crush it 🏋️‍♂️</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Message Input */}
+                <div className="mt-4 flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Type a message..."
+                    className="flex-1 rounded-lg border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button className="text-blue-500 text-sm hover:text-blue-600 transition-colors px-4">
+                    Send
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Right Column - Weekly Prios and Calendar */}
