@@ -159,161 +159,177 @@ const ProfileDetails = () => {
         </div>
       </div>
 
-      <div className="container mx-auto py-8 px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="w-full py-8 px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Column - User Details */}
-          <div className="bg-white rounded-lg p-8 shadow-sm relative">
-            {/* Only show edit icon for current user's profile */}
-            {isCurrentUser && (
-              <div className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 cursor-pointer">
-                <Pencil className="w-5 h-5" />
-              </div>
-            )}
-
-            {/* Header with photo and name */}
-            <div className="flex items-start gap-6 mb-12">
-              <img
-                src={userDetails.profile_picture || `/user_photos/${userDetails.first_name}.png`}
-                alt={`${userDetails.first_name} ${userDetails.last_name}`}
-                className="w-24 h-24 rounded-full border-2 border-white shadow-sm object-cover"
-                onError={(e) => {
-                  e.target.src = '/default-avatar.png';
-                }}
-              />
-              <div>
-                <h1 className="text-2xl font-medium text-gray-900">
-                  {userDetails.first_name} {userDetails.last_name}
-                </h1>
-                <div className="flex items-center gap-2 mt-2">
-                  <Building2 className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-600">{userDetails.today_location || 'Location unknown'}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Profile sections */}
-            <div className="space-y-8">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <Briefcase className="w-5 h-5 text-gray-500" />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500 mb-1 text-left">Role</div>
-                  <div className="text-gray-900 text-lg text-left">{userDetails.role}</div>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <User2 className="w-5 h-5 text-gray-500" />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500 mb-1 text-left">Bio</div>
-                  <div className="text-gray-900 text-lg text-left">{userDetails.profile_bio}</div>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <MapPin className="w-5 h-5 text-gray-500" />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500 mb-1 text-left">Location</div>
-                  <div className="text-gray-900 text-lg text-left">{userDetails.location}</div>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <Brain className="w-5 h-5 text-gray-500" />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500 mb-1 text-left">Skills</div>
-                  <div className="text-gray-900 text-lg text-left">{userDetails.skills}</div>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <Heart className="w-5 h-5 text-gray-500" />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500 mb-1 text-left">Interests</div>
-                  <div className="text-gray-900 text-lg text-left">{userDetails.interests}</div>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <UtensilsCrossed className="w-5 h-5 text-gray-500" />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500 mb-1 text-left">Favorite recipes</div>
-                  <div className="text-gray-900 text-lg text-left">{userDetails.favorite_recipes}</div>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <Plane className="w-5 h-5 text-gray-500" />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500 mb-1 text-left">I can recommend...</div>
-                  <div className="text-gray-900 text-lg text-left">{userDetails.recommendations}</div>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <Timer className="w-5 h-5 text-gray-500" />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500 mb-1 text-left">How long I have been with SUMM AI</div>
-                  <div className="text-gray-900 text-lg text-left">{userDetails.days_with_company} days</div>
-                </div>
-              </div>
-
-              {/* Office days for this week */}
-              {Array.isArray(userDetails.office_days) && userDetails.office_days.length > 0 && (
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                    <Building2 className="w-5 h-5 text-gray-500" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500 mb-1 text-left">Office days for this week</div>
-                    <div className="flex flex-wrap gap-2">
-                      {userDetails.office_days.map((day, index) => (
-                        <div
-                          key={index}
-                          className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-sm"
-                        >
-                          {day}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+          <div className="lg:col-span-6">
+            <div className="bg-white rounded-lg p-6 shadow-sm relative">
+              {/* Only show edit icon for current user's profile */}
+              {isCurrentUser && (
+                <div className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 cursor-pointer">
+                  <Pencil className="w-5 h-5" />
                 </div>
               )}
 
-              {/* Ask me about */}
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                  <Heart className="w-5 h-5 text-gray-500" />
-                </div>
+              {/* Header with photo and name */}
+              <div className="flex items-start gap-4 mb-8">
+                <img
+                  src={userDetails.profile_picture || `/user_photos/${userDetails.first_name}.png`}
+                  alt={`${userDetails.first_name} ${userDetails.last_name}`}
+                  className="w-20 h-20 rounded-full border-2 border-white shadow-sm object-cover"
+                  onError={(e) => {
+                    e.target.src = '/default-avatar.png';
+                  }}
+                />
                 <div>
-                  <div className="text-sm text-gray-500 mb-1 text-left">Ask me about</div>
-                  <div className="flex flex-wrap gap-2">
-                    {(userDetails.interests ? 
-                      userDetails.interests.split(',').slice(0, 3) : 
-                      ['My Role', 'My Experience', 'My Skills']
-                    ).map((topic, index) => (
-                      <div
-                        key={index}
-                        className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm"
-                      >
-                        {topic.trim()}
+                  <h1 className="text-xl font-medium text-gray-900">
+                    {userDetails.first_name} {userDetails.last_name}
+                  </h1>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <Building2 className="w-4 h-4 text-gray-400" />
+                    <span className="text-sm text-gray-600">{userDetails.today_location || 'Location unknown'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Profile sections */}
+              <div className="space-y-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <Briefcase className="w-4 h-4 text-gray-500" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-0.5 text-left">Role</div>
+                    <div className="text-gray-900 text-base text-left">{userDetails.role}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <User2 className="w-4 h-4 text-gray-500" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-0.5 text-left">Bio</div>
+                    <div className="text-gray-900 text-base text-left">{userDetails.profile_bio}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <MapPin className="w-4 h-4 text-gray-500" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-0.5 text-left">Location</div>
+                    <div className="text-gray-900 text-base text-left">{userDetails.location}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <Brain className="w-4 h-4 text-gray-500" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-0.5 text-left">Skills</div>
+                    <div className="text-gray-900 text-base text-left">{userDetails.skills}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <Heart className="w-4 h-4 text-gray-500" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-0.5 text-left">Interests</div>
+                    <div className="text-gray-900 text-base text-left">{userDetails.interests}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <UtensilsCrossed className="w-4 h-4 text-gray-500" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-0.5 text-left">Favorite recipes</div>
+                    <div className="text-gray-900 text-base text-left">{userDetails.favorite_recipes}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <Plane className="w-4 h-4 text-gray-500" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-0.5 text-left">I can recommend...</div>
+                    <div className="text-gray-900 text-base text-left">{userDetails.recommendations}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <Timer className="w-4 h-4 text-gray-500" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-0.5 text-left">How long I have been with SUMM AI</div>
+                    <div className="text-gray-900 text-base text-left">{userDetails.days_with_company} days</div>
+                  </div>
+                </div>
+
+                {/* Vacation Days Left */}
+                <div className="flex items-start gap-3">
+                  <div className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <Plane className="w-4 h-4 text-gray-500" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-0.5 text-left">Vacation days left</div>
+                    <div className="text-gray-900 text-base text-left">
+                      <span>9/25</span>
+                      <span className="text-xs text-gray-500 ml-1">days</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Office days for this week */}
+                {Array.isArray(userDetails.office_days) && userDetails.office_days.length > 0 && (
+                  <div className="flex items-start gap-3">
+                    <div className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                      <Building2 className="w-4 h-4 text-gray-500" />
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-500 mb-0.5 text-left">Office days for this week</div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {userDetails.office_days.map((day, index) => (
+                          <div
+                            key={index}
+                            className="px-3 py-1.5 bg-yellow-100 text-yellow-800 rounded-lg text-sm"
+                          >
+                            {day}
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Ask me about */}
+                <div className="flex items-start gap-3">
+                  <div className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                    <Heart className="w-4 h-4 text-gray-500" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-0.5 text-left">Ask me about</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(userDetails.interests ? 
+                        userDetails.interests.split(',').slice(0, 3) : 
+                        ['My Role', 'My Experience', 'My Skills']
+                      ).map((topic, index) => (
+                        <div
+                          key={index}
+                          className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm"
+                        >
+                          {topic.trim()}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -321,7 +337,7 @@ const ProfileDetails = () => {
           </div>
 
           {/* Right Column - MBTI */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-6">
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <img 
                 src="/profile_right.png" 
