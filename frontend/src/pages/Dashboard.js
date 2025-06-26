@@ -3,6 +3,13 @@ import { Bell, MapPin, Home, Plane, HeartPulse } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/apiService';
 
+// Common styles for user icons
+const USER_ICON_STYLES = {
+  small: "w-8 h-8 rounded-full border-2 border-white shadow-sm object-cover",
+  medium: "w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover",
+  large: "w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover"
+};
+
 const Dashboard = () => {
   const { user } = useAuth();
   const [employees, setEmployees] = useState([]);
@@ -77,18 +84,19 @@ const Dashboard = () => {
                     {/* Bottom Room */}
                     <div className="absolute bottom-0 left-0 right-0 h-[49%] border-2 border-gray-300 bg-white rounded-lg"></div>
 
-                    {/* Employee Names */}
+                    {/* Employee Photos */}
                     {atOfficeEmployees.map((employee, index) => (
-                      <div 
+                      <img 
                         key={employee.id}
-                        className="absolute bg-white px-2 py-1 rounded-lg shadow-sm border border-gray-200 text-sm"
+                        src={`/user_photos/${employee.first_name}.png`}
+                        alt={employee.first_name} 
+                        className={`absolute ${USER_ICON_STYLES.small}`}
                         style={{ 
                           top: `${Math.random() * 85 + 5}%`, 
                           left: `${Math.random() * 90 + 5}%` 
                         }}
-                      >
-                        {employee.first_name}
-                      </div>
+                        onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/32/32" }}
+                      />
                     ))}
                   </div>
                 </div>
@@ -101,9 +109,15 @@ const Dashboard = () => {
                     <MapPin className="w-5 h-5 text-orange-400" />
                     <span className="font-medium text-gray-700">On the road</span>
                   </div>
-                  <div className="mt-2 space-y-1">
+                  <div className="flex -space-x-2 justify-end mt-2">
                     {onRoadEmployees.map(employee => (
-                      <div key={employee.id} className="text-sm text-gray-600">{employee.first_name}</div>
+                      <img 
+                        key={employee.id} 
+                        src={`/user_photos/${employee.first_name}.png`} 
+                        alt={employee.first_name} 
+                        className={USER_ICON_STYLES.small}
+                        onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/32/32" }} 
+                      />
                     ))}
                   </div>
                 </div>
@@ -112,9 +126,15 @@ const Dashboard = () => {
                     <Home className="w-5 h-5 text-blue-400" />
                     <span className="font-medium text-gray-700">Home Office</span>
                   </div>
-                  <div className="mt-2 space-y-1">
+                  <div className="flex -space-x-2 justify-end mt-2">
                     {homeOfficeEmployees.map(employee => (
-                      <div key={employee.id} className="text-sm text-gray-600">{employee.first_name}</div>
+                      <img 
+                        key={employee.id} 
+                        src={`/user_photos/${employee.first_name}.png`} 
+                        alt={employee.first_name} 
+                        className={USER_ICON_STYLES.small}
+                        onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/32/32" }} 
+                      />
                     ))}
                   </div>
                 </div>
@@ -123,9 +143,15 @@ const Dashboard = () => {
                     <Plane className="w-5 h-5 text-purple-400" />
                     <span className="font-medium text-gray-700">Vacation</span>
                   </div>
-                  <div className="mt-2 space-y-1">
+                  <div className="flex -space-x-2 justify-end mt-2">
                     {vacationEmployees.map(employee => (
-                      <div key={employee.id} className="text-sm text-gray-600">{employee.first_name}</div>
+                      <img 
+                        key={employee.id} 
+                        src={`/user_photos/${employee.first_name}.png`} 
+                        alt={employee.first_name} 
+                        className={USER_ICON_STYLES.small}
+                        onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/32/32" }} 
+                      />
                     ))}
                   </div>
                 </div>
@@ -134,9 +160,15 @@ const Dashboard = () => {
                     <HeartPulse className="w-5 h-5 text-red-400" />
                     <span className="font-medium text-gray-700">Sick</span>
                   </div>
-                  <div className="mt-2 space-y-1">
+                  <div className="flex -space-x-2 justify-end mt-2">
                     {sickEmployees.map(employee => (
-                      <div key={employee.id} className="text-sm text-gray-600">{employee.first_name}</div>
+                      <img 
+                        key={employee.id} 
+                        src={`/user_photos/${employee.first_name}.png`} 
+                        alt={employee.first_name} 
+                        className={USER_ICON_STYLES.small}
+                        onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/32/32" }} 
+                      />
                     ))}
                   </div>
                 </div>
@@ -146,7 +178,7 @@ const Dashboard = () => {
             {/* Co-workers Section */}
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <h2 className="text-lg font-medium text-gray-900 mb-4">Co-workers</h2>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex gap-6 overflow-x-auto pb-2">
                 {employees.map((employee) => {
                   const statusMap = {
                     green: 'online',
@@ -156,12 +188,20 @@ const Dashboard = () => {
                   const status = statusMap[employee.workload_status] || 'offline';
 
                   return (
-                    <div key={employee.id} className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${
-                        status === 'online' ? 'bg-green-500' : 
-                        status === 'away' ? 'bg-yellow-500' : 'bg-gray-400'
-                      }`}></div>
-                      <span className="text-sm text-gray-700">{employee.first_name}</span>
+                    <div key={employee.id} className="flex flex-col items-center min-w-0">
+                      <div className="relative">
+                        <img
+                          src={`/user_photos/${employee.first_name}.png`}
+                          alt={employee.first_name}
+                          className={USER_ICON_STYLES.large}
+                          onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/48/48" }}
+                        />
+                        <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
+                          status === 'online' ? 'bg-green-500' : 
+                          status === 'away' ? 'bg-yellow-500' : 'bg-gray-400'
+                        }`}></div>
+                      </div>
+                      <span className="text-sm text-gray-700 mt-2 text-center">{employee.first_name}</span>
                     </div>
                   );
                 })}
