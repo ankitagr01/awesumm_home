@@ -44,88 +44,149 @@ const ProfileDetails = () => {
     );
   }
 
-  const profileSections = [
-    { label: 'Role', value: userDetails.role, icon: <Briefcase className="w-5 h-5" /> },
-    { label: 'Bio', value: userDetails.profile_bio, icon: <User2 className="w-5 h-5" /> },
-    { label: 'Location', value: userDetails.location, icon: <MapPin className="w-5 h-5" /> },
-    { label: 'Skills', value: userDetails.skills, icon: <Brain className="w-5 h-5" /> },
-    { label: 'Interests', value: userDetails.interests, icon: <Heart className="w-5 h-5" /> },
-    { label: 'Favorite recipes', value: userDetails.favorite_recipes, icon: <UtensilsCrossed className="w-5 h-5" /> },
-    { label: 'I can recommend...', value: userDetails.recommendations, icon: <Plane className="w-5 h-5" /> },
-    { 
-      label: 'How long I have been with SUMM AI', 
-      value: `${userDetails.days_with_company} days`, 
-      icon: <Timer className="w-5 h-5" /> 
-    },
-  ];
-
   return (
     <div className="min-h-screen bg-[#f5f7fc] p-6">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Column - Profile Details */}
-          <div className="bg-white rounded-xl shadow-sm">
-            <div className="p-8 space-y-8">
-              {/* Header Section */}
-              <div className="flex items-start space-x-6">
-                <img
-                  src={`/user_photos/${userDetails.first_name}.png`}
-                  alt={userDetails.first_name}
-                  className="w-24 h-24 rounded-full object-cover border-2 border-white shadow-sm"
-                />
+          {/* Left Column - User Details */}
+          <div className="bg-white rounded-lg p-8 shadow-sm">
+            {/* Header with photo and name */}
+            <div className="flex items-start gap-6 mb-12">
+              <img
+                src={`/user_photos/${userDetails.first_name}.png`}
+                alt={userDetails.first_name}
+                className="w-24 h-24 rounded-full border-2 border-white shadow-sm object-cover"
+              />
+              <div>
+                <h1 className="text-2xl font-medium text-gray-900">
+                  {userDetails.first_name} {userDetails.last_name}
+                </h1>
+                <div className="flex items-center gap-2 mt-2">
+                  <Building2 className="w-4 h-4 text-gray-400" />
+                  <span className="text-gray-600">At the office</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Profile sections */}
+            <div className="space-y-8">
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <Briefcase className="w-5 h-5 text-gray-500" />
+                </div>
                 <div>
-                  <h1 className="text-2xl font-medium text-gray-900">
-                    {userDetails.first_name} {userDetails.last_name}
-                  </h1>
-                  <div className="flex items-center text-gray-600 mt-2">
-                    <Building2 className="w-4 h-4 mr-2" />
-                    At the office
-                  </div>
+                  <div className="text-sm text-gray-500 mb-1 text-left">Role</div>
+                  <div className="text-gray-900 text-lg text-left">{userDetails.role}</div>
                 </div>
               </div>
 
-              {/* Info Items */}
-              <div className="space-y-6">
-                {profileSections.map((section, index) => (
-                  <div key={index} className="flex items-start space-x-4 group">
-                    <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      {section.icon}
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-sm text-gray-500">{section.label}</div>
-                      <div className="text-gray-900 mt-1">{section.value}</div>
-                    </div>
-                  </div>
-                ))}
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <User2 className="w-5 h-5 text-gray-500" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500 mb-1 text-left">Bio</div>
+                  <div className="text-gray-900 text-lg text-left">{userDetails.profile_bio}</div>
+                </div>
               </div>
 
-              {/* Office Days */}
-              <div className="space-y-2">
-                <div className="text-sm text-gray-500">Office days</div>
-                <div className="flex flex-wrap gap-2">
-                  {userDetails.office_days.map((day, index) => (
-                    <div
-                      key={index}
-                      className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-sm"
-                    >
-                      {day}
-                    </div>
-                  ))}
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <MapPin className="w-5 h-5 text-gray-500" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500 mb-1 text-left">Location</div>
+                  <div className="text-gray-900 text-lg text-left">{userDetails.location}</div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <Brain className="w-5 h-5 text-gray-500" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500 mb-1 text-left">Skills</div>
+                  <div className="text-gray-900 text-lg text-left">{userDetails.skills}</div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <Heart className="w-5 h-5 text-gray-500" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500 mb-1 text-left">Interests</div>
+                  <div className="text-gray-900 text-lg text-left">{userDetails.interests}</div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <UtensilsCrossed className="w-5 h-5 text-gray-500" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500 mb-1 text-left">Favorite recipes</div>
+                  <div className="text-gray-900 text-lg text-left">{userDetails.favorite_recipes}</div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <Plane className="w-5 h-5 text-gray-500" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500 mb-1 text-left">I can recommend...</div>
+                  <div className="text-gray-900 text-lg text-left">{userDetails.recommendations}</div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <Timer className="w-5 h-5 text-gray-500" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500 mb-1 text-left">How long I have been with SUMM AI</div>
+                  <div className="text-gray-900 text-lg text-left">{userDetails.days_with_company} days</div>
+                </div>
+              </div>
+
+              {/* Office days for this week */}
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <Building2 className="w-5 h-5 text-gray-500" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500 mb-1 text-left">Office days for this week</div>
+                  <div className="flex flex-wrap gap-2">
+                    {userDetails.office_days.map((day, index) => (
+                      <div
+                        key={index}
+                        className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-lg text-sm"
+                      >
+                        {day}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
               {/* Ask me about */}
-              <div className="space-y-2">
-                <div className="text-sm text-gray-500">Ask me about</div>
-                <div className="flex flex-wrap gap-2">
-                  {['Translation', 'Training for Marathon', 'Erasmus'].map((topic, index) => (
-                    <div
-                      key={index}
-                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm"
-                    >
-                      {topic}
-                    </div>
-                  ))}
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                  <Heart className="w-5 h-5 text-gray-500" />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500 mb-1 text-left">Ask me about</div>
+                  <div className="flex flex-wrap gap-2">
+                    {['Translation', 'Training for Marathon', 'Erasmus'].map((topic, index) => (
+                      <div
+                        key={index}
+                        className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm"
+                      >
+                        {topic}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -133,7 +194,7 @@ const ProfileDetails = () => {
 
           {/* Right Column - MBTI */}
           <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="bg-white rounded-lg p-6 shadow-sm">
               <img 
                 src="/profile_right.png" 
                 alt="MBTI Profile" 
