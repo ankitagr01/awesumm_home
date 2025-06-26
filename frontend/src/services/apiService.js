@@ -14,8 +14,6 @@ const api = axios.create({
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    console.log('API Request:', config.method?.toUpperCase(), config.url);
-    
     // Add auth token if available
     const token = localStorage.getItem('auth_token');
     if (token) {
@@ -33,7 +31,6 @@ api.interceptors.request.use(
 // Response interceptor
 api.interceptors.response.use(
   (response) => {
-    console.log('API Response:', response.status, response.data);
     return response;
   },
   (error) => {
@@ -44,11 +41,8 @@ api.interceptors.response.use(
 
 // API Service functions
 export const apiService = {
-  // Test endpoints
-  testHello: () => api.get('/hello/'),
+  // Basic endpoints
   getStatus: () => api.get('/status/'),
-  getTestUsers: () => api.get('/test-users/'),
-  testSupabase: () => api.get('/test-supabase/'),
   
   // Authentication endpoints
   signup: (userData) => api.post('/auth/signup/', userData),

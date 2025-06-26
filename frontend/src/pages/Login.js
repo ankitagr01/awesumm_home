@@ -27,7 +27,17 @@ const Login = ({ switchToSignup }) => {
       await login(formData);
       // Success handled by auth context
     } catch (error) {
-      setError(error.response?.data?.error || 'Login failed');
+      const errorMessage = error.response?.data?.error || 'Login failed';
+      const errorDetails = error.response?.data?.details || '';
+      
+      // Handle email confirmation error specifically
+      if (errorMessage === 'Email not confirmed') {
+        setError(
+          `${errorMessage}. ${errorDetails} Please check your email inbox and click the confirmation link before logging in.`
+        );
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }

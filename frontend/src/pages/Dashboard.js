@@ -5,39 +5,24 @@ import { apiService } from '../services/apiService';
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const [apiData, setApiData] = useState({
-    hello: null,
     status: null,
-    users: null,
-    supabase: null,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const testAPI = async () => {
+  const loadDashboardData = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      console.log('Testing API endpoints...');
-
-      // Test all endpoints
-      const [helloResponse, statusResponse, usersResponse, supabaseResponse] = await Promise.all([
-        apiService.testHello(),
-        apiService.getStatus(),
-        apiService.getTestUsers(),
-        apiService.testSupabase(),
-      ]);
+      // Load basic API status
+      const statusResponse = await apiService.getStatus();
 
       setApiData({
-        hello: helloResponse.data,
         status: statusResponse.data,
-        users: usersResponse.data,
-        supabase: supabaseResponse.data,
       });
 
-      console.log('All API tests successful!');
     } catch (err) {
-      console.error('API test failed:', err);
       setError(`API Error: ${err.message}`);
     } finally {
       setLoading(false);
@@ -45,7 +30,7 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    testAPI();
+    loadDashboardData();
   }, []);
 
   const handleLogout = async () => {
@@ -117,7 +102,7 @@ const Dashboard = () => {
         <div style={{ textAlign: 'center', color: 'red', padding: '40px' }}>
           <h2>API Connection Error</h2>
           <p>{error}</p>
-          <button onClick={testAPI} style={{ marginTop: '10px', padding: '10px 20px' }}>
+          <button onClick={loadDashboardData} style={{ marginTop: '10px', padding: '10px 20px' }}>
             Retry Connection
           </button>
         </div>
@@ -131,82 +116,63 @@ const Dashboard = () => {
           </div>
 
           <div style={{ display: 'grid', gap: '20px' }}>
-            {/* Hello Endpoint */}
-            <div style={{ border: '1px solid #ddd', padding: '15px', borderRadius: '5px' }}>
-              <h3>🔗 API Test</h3>
-              <pre style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '3px' }}>
-                {JSON.stringify(apiData.hello, null, 2)}
-              </pre>
+            {/* Quick Stats */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+              <div style={{ border: '1px solid #ddd', padding: '20px', borderRadius: '8px', textAlign: 'center', backgroundColor: '#f8f9fa' }}>
+                <h3 style={{ margin: '0 0 10px 0', color: '#28a745' }}>✅ System Status</h3>
+                <p style={{ margin: 0, fontSize: '14px' }}>{apiData.status?.status || 'Unknown'}</p>
+              </div>
+              
+              <div style={{ border: '1px solid #ddd', padding: '20px', borderRadius: '8px', textAlign: 'center', backgroundColor: '#f8f9fa' }}>
+                <h3 style={{ margin: '0 0 10px 0', color: '#007bff' }}>👤 User Profile</h3>
+                <p style={{ margin: 0, fontSize: '14px' }}>Profile Active</p>
+              </div>
+              
+              <div style={{ border: '1px solid #ddd', padding: '20px', borderRadius: '8px', textAlign: 'center', backgroundColor: '#f8f9fa' }}>
+                <h3 style={{ margin: '0 0 10px 0', color: '#6c757d' }}>📊 Dashboard</h3>
+                <p style={{ margin: 0, fontSize: '14px' }}>Ready for Development</p>
+              </div>
             </div>
 
-            {/* Status Endpoint */}
-            <div style={{ border: '1px solid #ddd', padding: '15px', borderRadius: '5px' }}>
-              <h3>📊 Backend Status</h3>
-              <pre style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '3px' }}>
-                {JSON.stringify(apiData.status, null, 2)}
-              </pre>
+            {/* Recent Activity Placeholder */}
+            <div style={{ border: '1px solid #ddd', padding: '20px', borderRadius: '8px' }}>
+              <h3 style={{ marginTop: 0 }}>📈 Recent Activity</h3>
+              <p style={{ color: '#6c757d', fontStyle: 'italic' }}>
+                No recent activity to display. This section will show employee tracking data once features are implemented.
+              </p>
             </div>
+          </div>
 
-            {/* Supabase Test */}
-            <div style={{ border: '1px solid #ddd', padding: '15px', borderRadius: '5px' }}>
-              <h3>🗃️ Supabase Connection</h3>
-              <pre style={{ backgroundColor: '#f5f5f5', padding: '10px', borderRadius: '3px' }}>
-                {JSON.stringify(apiData.supabase, null, 2)}
-              </pre>
-            </div>
-
-            {/* Users Endpoint */}
-            <div style={{ border: '1px solid #ddd', padding: '15px', borderRadius: '5px' }}>
-              <h3>👥 Mock Users Data</h3>
-              <p>Found {apiData.users?.count} test users:</p>
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                {apiData.users?.users?.map(user => (
-                  <div 
-                    key={user.id} 
-                    style={{ 
-                      border: '1px solid #ccc', 
-                      padding: '10px', 
-                      borderRadius: '5px',
-                      backgroundColor: user.status === 'available' ? '#e8f5e8' : 
-                                      user.status === 'busy' ? '#ffe8e8' : '#fff3e0'
-                    }}
-                  >
-                    <strong>{user.name}</strong><br/>
-                    <small>{user.role} • {user.status}</small>
-                  </div>
-                ))}
+          <div style={{ marginTop: '30px', padding: '20px', backgroundColor: '#e3f2fd', borderRadius: '8px' }}>
+            <h3 style={{ color: '#1976d2', marginTop: 0 }}>🚀 Next Development Steps</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '15px', marginTop: '15px' }}>
+              <div style={{ padding: '15px', backgroundColor: 'white', borderRadius: '5px', border: '1px solid #ddd' }}>
+                <h4 style={{ margin: '0 0 10px 0', color: '#28a745' }}>✅ Completed</h4>
+                <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '14px' }}>
+                  <li>User Authentication</li>
+                  <li>Supabase Integration</li>
+                  <li>Basic Profile Management</li>
+                  <li>Protected Routes</li>
+                </ul>
+              </div>
+              <div style={{ padding: '15px', backgroundColor: 'white', borderRadius: '5px', border: '1px solid #ddd' }}>
+                <h4 style={{ margin: '0 0 10px 0', color: '#ffc107' }}>⏳ In Progress</h4>
+                <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '14px' }}>
+                  <li>Dashboard Enhancement</li>
+                  <li>Code Cleanup</li>
+                </ul>
+              </div>
+              <div style={{ padding: '15px', backgroundColor: 'white', borderRadius: '5px', border: '1px solid #ddd' }}>
+                <h4 style={{ margin: '0 0 10px 0', color: '#6c757d' }}>📋 Planned</h4>
+                <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '14px' }}>
+                  <li>Profile Editing</li>
+                  <li>Time Tracking</li>
+                  <li>Attendance Management</li>
+                  <li>Reporting Features</li>
+                </ul>
               </div>
             </div>
           </div>
-
-          <div style={{ marginTop: '30px', padding: '20px', backgroundColor: '#f0f8ff', borderRadius: '5px' }}>
-            <h3>🎯 Next Development Steps:</h3>
-            <ul>
-              <li>✅ User Authentication (Login/Signup) - <strong>COMPLETE!</strong></li>
-              <li>✅ Supabase Integration - <strong>WORKING!</strong></li>
-              <li>✅ User Profile Management - <strong>BASIC VERSION DONE!</strong></li>
-              <li>🔄 Dashboard with real user status</li>
-              <li>⏳ Profile editing capabilities</li>
-              <li>⏳ User status management</li>
-              <li>⏳ Advanced dashboard features</li>
-            </ul>
-          </div>
-
-          <button 
-            onClick={testAPI}
-            style={{
-              marginTop: '20px',
-              padding: '15px 30px',
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              fontSize: '16px'
-            }}
-          >
-            🔄 Refresh API Status
-          </button>
         </div>
       )}
     </div>
