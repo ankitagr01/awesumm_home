@@ -75,30 +75,70 @@ const Dashboard = () => {
                 </div>
                 
                 {/* Office Floor Plan */}
-                <div className="relative bg-gray-50 border-2 border-gray-200 rounded-lg h-96 overflow-hidden">
-                  {/* Room Layout */}
-                  <div className="absolute inset-4">
-                    {/* Top Room */}
-                    <div className="absolute top-0 left-0 right-0 h-[49%] border-2 border-gray-300 bg-white rounded-lg"></div>
-                    
-                    {/* Bottom Room */}
-                    <div className="absolute bottom-0 left-0 right-0 h-[49%] border-2 border-gray-300 bg-white rounded-lg"></div>
+                <div className="relative w-full h-[600px] border-[5px] border-black rounded-lg overflow-hidden bg-white">
+                  {/* Rooms */}
+                  <div className="absolute top-0 left-0 w-full h-[300px] border-r-[5px] border-black"></div>
+                  <div className="absolute top-[300px] left-0 w-full h-[300px] border-r-[5px] border-black"></div>
+                  
+                  {/* Inner Wall */}
+                  <div className="absolute top-[250px] left-[400px] w-[5px] h-[50px] bg-black"></div>
+                  
+                  {/* Side Room */}
+                  <div className="absolute top-[300px] right-[-5px] w-[60px] h-[300px] border-[5px] border-l-0 border-black"></div>
 
-                    {/* Employee Photos */}
-                    {atOfficeEmployees.map((employee, index) => (
+                  {/* Desks - Top Room */}
+                  <div className="absolute top-[40px] left-[30px] w-[80px] h-[120px] bg-gray-200"></div>
+                  <div className="absolute top-[40px] right-[30px] w-[120px] h-[80px] bg-gray-200"></div>
+
+                  {/* Desks - Bottom Room */}
+                  <div className="absolute top-[330px] left-[20px] w-[100px] h-[80px] bg-gray-200"></div>
+                  <div className="absolute top-[420px] left-[20px] w-[100px] h-[80px] bg-gray-200"></div>
+                  <div className="absolute top-[330px] left-[140px] w-[100px] h-[80px] bg-gray-200"></div>
+                  <div className="absolute top-[420px] left-[140px] w-[100px] h-[80px] bg-gray-200"></div>
+                  <div className="absolute top-[330px] left-[260px] w-[100px] h-[80px] bg-gray-200"></div>
+                  <div className="absolute top-[420px] left-[260px] w-[100px] h-[80px] bg-gray-200"></div>
+                  <div className="absolute top-[500px] left-[360px] w-[120px] h-[50px] bg-gray-200"></div>
+
+                  {/* Employee Photos - Top Section */}
+                  {atOfficeEmployees.slice(0, 2).map((employee, index) => {
+                    const positions = [
+                      { top: '70px', left: '40px' },  // Near top-left desk
+                      { top: '60px', right: '50px' }  // Near top-right desk
+                    ];
+                    return (
                       <img 
                         key={employee.id}
                         src={`/user_photos/${employee.first_name}.png`}
                         alt={employee.first_name} 
-                        className={`absolute ${USER_ICON_STYLES.small}`}
-                        style={{ 
-                          top: `${Math.random() * 85 + 5}%`, 
-                          left: `${Math.random() * 90 + 5}%` 
-                        }}
+                        className={`absolute ${USER_ICON_STYLES.small} z-10`}
+                        style={positions[index]}
                         onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/32/32" }}
                       />
-                    ))}
-                  </div>
+                    );
+                  })}
+
+                  {/* Employee Photos - Bottom Section */}
+                  {atOfficeEmployees.slice(2).map((employee, index) => {
+                    const positions = [
+                      { top: '350px', left: '40px' },    // Near bottom-left1 desk
+                      { top: '440px', left: '40px' },    // Near bottom-left2 desk
+                      { top: '350px', left: '160px' },   // Near bottom-center1 desk
+                      { top: '440px', left: '160px' },   // Near bottom-center2 desk
+                      { top: '350px', left: '280px' },   // Near bottom-right1 desk
+                      { top: '440px', left: '280px' },   // Near bottom-right2 desk
+                      { top: '510px', left: '380px' }    // Near bottom-far-right desk
+                    ];
+                    return (
+                      <img 
+                        key={employee.id}
+                        src={`/user_photos/${employee.first_name}.png`}
+                        alt={employee.first_name} 
+                        className={`absolute ${USER_ICON_STYLES.small} z-10`}
+                        style={positions[index] || { top: '350px', left: '40px' }}
+                        onError={(e) => { e.target.onerror = null; e.target.src="/api/placeholder/32/32" }}
+                      />
+                    );
+                  })}
                 </div>
               </div>
 
