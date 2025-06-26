@@ -106,12 +106,12 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
           {/* Left & Middle Column */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="lg:col-span-7 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
               {/* At the office section */}
-              <div className="md:col-span-2 bg-white rounded-lg p-6 shadow-sm">
+              <div className="md:col-span-7 bg-white rounded-lg p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <h2 className="text-lg font-medium text-gray-900">At the office</h2>
@@ -119,46 +119,40 @@ const Dashboard = () => {
                 
                 {/* Office Floor Plan */}
                 <div className="relative w-full h-[400px] border-[3px] border-black rounded-lg overflow-hidden bg-white">
-                  {/* Desks with circular indicators */}
-                  {/* Top room desks */}
-                  <div className="absolute top-[30px] left-[30px] w-[80px] h-[90px] bg-gray-100 rounded-md">
+                  {/* Top room desks - no rotation */}
+                  <div className="absolute top-[30px] left-[20px] w-[80px] h-[90px] bg-gray-100 rounded-md">
                   </div>
-                  <div className="absolute top-[30px] right-[30px] w-[90px] h-[80px] bg-gray-100 rounded-md">
+                  <div className="absolute top-[30px] right-[180px] w-[90px] h-[80px] bg-gray-100 rounded-md">
                   </div>
                   
-                  {/* Bottom room desks */}
+                  {/* Bottom room desks - minimal vertical and horizontal spacing */}
                   <div className="absolute top-[220px] left-[20px] w-[80px] h-[60px] bg-gray-100 rounded-md">
                   </div>
-                  <div className="absolute top-[330px] left-[20px] w-[80px] h-[60px] bg-gray-100 rounded-md">
+                  <div className="absolute top-[285px] left-[20px] w-[80px] h-[60px] bg-gray-100 rounded-md">
                   </div>
-                  <div className="absolute top-[220px] left-[180px] w-[80px] h-[60px] bg-gray-100 rounded-md">
+                  <div className="absolute top-[220px] left-[105px] w-[80px] h-[60px] bg-gray-100 rounded-md">
                   </div>
-                  <div className="absolute top-[330px] left-[180px] w-[80px] h-[60px] bg-gray-100 rounded-md">
+                  <div className="absolute top-[285px] left-[105px] w-[80px] h-[60px] bg-gray-100 rounded-md">
                   </div>
 
-                  {/* Dotted line with circles */}
-                  <div className="absolute top-[200px] left-[20px] right-[20px] flex items-center">
-                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                    <div className="flex-1 border-b-2 border-dotted border-blue-400"></div>
-                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                    <div className="flex-1 border-b-2 border-dotted border-blue-400"></div>
-                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                  </div>
-                  
-                  {/* Employee Photos */}
+                  {/* Solid black lines */}
+                  <div className="absolute top-[200px] left-0 right-0 h-[2px] bg-black"></div>
+                  <div className="absolute top-0 right-[80px] h-[200px] w-[2px] bg-black"></div>
+
+                  {/* Employee Photos with adjusted positions */}
                   {atOfficeEmployees.map((employee, index) => {
                     const positions = [
-                      { top: '60px', left: '50px' },     // Top left desk
-                      { top: '50px', right: '60px' },    // Top right desk
-                      { top: '240px', left: '40px' },    // Bottom left desk 1
-                      { top: '350px', left: '40px' },    // Bottom left desk 2
-                      { top: '240px', left: '200px' },   // Bottom center desk 1
-                      { top: '350px', left: '200px' },   // Bottom center desk 2
+                      { top: '50px', left: '40px' },     // Top left desk
+                      { top: '40px', right: '200px' },   // Top right desk
+                      { top: '230px', left: '40px' },    // Bottom left desk 1
+                      { top: '295px', left: '40px' },    // Bottom left desk 2
+                      { top: '230px', left: '125px' },   // Bottom center desk 1
+                      { top: '295px', left: '125px' },   // Bottom center desk 2
                     ];
 
                     const position = positions[index] || {
-                      top: `${240 + (index % 2) * 110}px`,
-                      left: `${40 + Math.floor(index / 2) * 160}px`
+                      top: `${230 + (index % 2) * 65}px`,
+                      left: `${40 + Math.floor(index / 2) * 85}px`
                     };
 
                     return (
@@ -181,7 +175,7 @@ const Dashboard = () => {
               </div>
 
               {/* Right side sections */}
-              <div className="space-y-4">
+              <div className="md:col-span-5 space-y-4">
                 {/* On the road section */}
                 <div className="bg-white rounded-lg p-4 shadow-sm">
                   <div className="flex items-center justify-between">
@@ -271,7 +265,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Co-workers Section */}
             <div className="bg-white rounded-lg p-6 shadow-sm mt-6">
               <h2 className="text-lg font-medium text-gray-900 mb-6">Co-workers</h2>
@@ -312,8 +306,8 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Right Column - 1/3 width */}
-          <div className="space-y-6">
+          {/* Right Column - Weekly Prios and Calendar */}
+          <div className="lg:col-span-3 space-y-6">
             {/* Weekly Prios */}
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <h2 className="text-lg font-medium text-gray-900 mb-4">Weekly Prios</h2>
@@ -351,7 +345,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Today, Meetings */}
+            {/* SUMM Calendar */}
             <div className="bg-white rounded-lg p-6 shadow-sm">
               <h2 className="text-lg font-medium text-gray-900 mb-2">SUMM Calendar</h2>
               
