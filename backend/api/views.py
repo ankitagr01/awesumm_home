@@ -12,15 +12,30 @@ from django.shortcuts import get_object_or_404
 from .models import User, UserDetails
 from rest_framework import serializers
 from django.db import models
+import os
+from urllib.parse import urlparse
+import socket
 
 # Create your views here.
 
 # Initialize Supabase client
-def get_supabase_client():
+def get_supabase_client() -> Client:
     """Get configured Supabase client"""
-    supabase_url = settings.SUPABASE_URL
-    supabase_key = settings.SUPABASE_KEY
-    return create_client(supabase_url, supabase_key)
+    try:
+        # Get base URL (without any trailing slashes or auth paths)
+        supabase_url = os.getenv('SUPABASE_URL', '').rstrip('/')
+        if supabase_url.endswith('/auth/v1'):
+            supabase_url = supabase_url[:-8]
+        
+        supabase_key = os.getenv('SUPABASE_API_KEY')
+        if not supabase_url or not supabase_key:
+            raise ValueError("SUPABASE_URL and SUPABASE_API_KEY must be set")
+            
+        # Create client with proper typing
+        return create_client(supabase_url, supabase_key)
+    except Exception as e:
+        print(f"Debug - Error in get_supabase_client: {str(e)}")
+        raise e
 
 
 
@@ -128,36 +143,35 @@ def login(request):
             }, status=400)
         
         # Create Supabase client
-        supabase = get_supabase_client()
+        try:
+            supabase: Client = get_supabase_client()
+        except Exception as e:
+            return Response({
+                'error': 'Authentication service unavailable',
+                'status': 'failed',
+                'details': str(e)
+            }, status=503)
         
         # Sign in with Supabase Auth
         try:
+            # Use the correct auth method from the SDK
             auth_response = supabase.auth.sign_in_with_password({
                 "email": email,
                 "password": password
             })
-        except Exception as auth_error:
-            # Check if it's an email confirmation issue
-            if "Email not confirmed" in str(auth_error):
+            
+            if not auth_response.user or not auth_response.session:
                 return Response({
-                    'error': 'Email not confirmed',
-                    'status': 'failed',
-                    'details': 'Please check your email and click the confirmation link before logging in.'
-                }, status=400)
-            else:
-                return Response({
-                    'error': 'Login failed',
-                    'status': 'failed',
-                    'details': str(auth_error)
-                }, status=400)
-        
-        if auth_response.user and auth_response.session:
+                    'error': 'Invalid credentials',
+                    'status': 'failed'
+                }, status=401)
+            
             # Get user details from users table
             try:
                 user_details = supabase.table('users').select('*').eq('id', auth_response.user.id).execute()
                 user_data = user_details.data[0] if user_details.data else {}
             except Exception as e:
-                # Log this in production with proper logging
+                print(f"Debug - Error fetching user details: {str(e)}")
                 user_data = {}
             
             return Response({
@@ -176,13 +190,24 @@ def login(request):
                     'expires_at': auth_response.session.expires_at
                 }
             })
-        else:
-            return Response({
-                'error': 'Invalid credentials',
-                'status': 'failed'
-            }, status=401)
+            
+        except Exception as auth_error:
+            print(f"Debug - Auth error: {str(auth_error)}")
+            if "Email not confirmed" in str(auth_error):
+                return Response({
+                    'error': 'Email not confirmed',
+                    'status': 'failed',
+                    'details': 'Please check your email and click the confirmation link before logging in.'
+                }, status=400)
+            else:
+                return Response({
+                    'error': 'Login failed',
+                    'status': 'failed',
+                    'details': str(auth_error)
+                }, status=400)
             
     except Exception as e:
+        print(f"Debug - General error: {str(e)}")
         return Response({
             'error': 'Login failed',
             'status': 'failed',
