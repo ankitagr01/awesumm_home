@@ -1,11 +1,13 @@
 import React from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AuthPage from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
+import ProfileDetails from './pages/ProfileDetails';
 import './App.css';
 
-// Main App Content (inside AuthProvider)
-const AppContent = () => {
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
@@ -25,17 +27,45 @@ const AppContent = () => {
     );
   }
 
-  return isAuthenticated ? <Dashboard /> : <AuthPage />;
+  return isAuthenticated ? children : <Navigate to="/auth" />;
 };
 
-// Main App Component (with AuthProvider)
+// Main App Component
 function App() {
   return (
-    <div className="App">
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </div>
+    <Router>
+      <div className="App">
+        <AuthProvider>
+          <Routes>
+            <Route path="/auth" element={<AuthPage />} />
+            <Route 
+              path="/" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <ProfileDetails />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/profile/:userId" 
+              element={
+                <ProtectedRoute>
+                  <ProfileDetails />
+                </ProtectedRoute>
+              } 
+            />
+          </Routes>
+        </AuthProvider>
+      </div>
+    </Router>
   );
 }
 

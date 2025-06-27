@@ -29,7 +29,11 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('auth_token');
       if (token) {
         const response = await apiService.getCurrentUser();
-        setUser(response.data.user);
+        setUser({
+          ...response.data.user,
+          first_name: response.data.user.forename,
+          last_name: response.data.user.lastname,
+        });
       }
     } catch (error) {
       console.error('Auth check failed:', error);
@@ -70,7 +74,11 @@ export const AuthProvider = ({ children }) => {
       
       if (response.data.session?.access_token) {
         localStorage.setItem('auth_token', response.data.session.access_token);
-        setUser(response.data.user);
+        setUser({
+          ...response.data.user,
+          first_name: response.data.user.forename,
+          last_name: response.data.user.lastname,
+        });
       }
       
       return response.data;

@@ -168,4 +168,10 @@ REST_FRAMEWORK = {
 
 # Supabase settings
 SUPABASE_URL = os.getenv('SUPABASE_URL', '')
+if SUPABASE_URL and not SUPABASE_URL.startswith('https://'):
+    SUPABASE_URL = f'https://{SUPABASE_URL}'
 SUPABASE_KEY = os.getenv('SUPABASE_API_KEY', '')
+
+print("Debug - Settings loaded:")
+print(f"SUPABASE_URL from env: {SUPABASE_URL}")
+print(f"SUPABASE_KEY from env: {os.getenv('SUPABASE_API_KEY')[:10]}..." if os.getenv('SUPABASE_API_KEY') else "No key found")

@@ -12,15 +12,30 @@ from django.shortcuts import get_object_or_404
 from .models import User, UserDetails
 from rest_framework import serializers
 from django.db import models
+import os
+from urllib.parse import urlparse
+import socket
 
 # Create your views here.
 
 # Initialize Supabase client
-def get_supabase_client():
+def get_supabase_client() -> Client:
     """Get configured Supabase client"""
-    supabase_url = settings.SUPABASE_URL
-    supabase_key = settings.SUPABASE_KEY
-    return create_client(supabase_url, supabase_key)
+    try:
+        # Get base URL (without any trailing slashes or auth paths)
+        supabase_url = os.getenv('SUPABASE_URL', '').rstrip('/')
+        if supabase_url.endswith('/auth/v1'):
+            supabase_url = supabase_url[:-8]
+        
+        supabase_key = os.getenv('SUPABASE_API_KEY')
+        if not supabase_url or not supabase_key:
+            raise ValueError("SUPABASE_URL and SUPABASE_API_KEY must be set")
+            
+        # Create client with proper typing
+        return create_client(supabase_url, supabase_key)
+    except Exception as e:
+        print(f"Debug - Error in get_supabase_client: {str(e)}")
+        raise e
 
 
 
@@ -128,36 +143,35 @@ def login(request):
             }, status=400)
         
         # Create Supabase client
-        supabase = get_supabase_client()
+        try:
+            supabase: Client = get_supabase_client()
+        except Exception as e:
+            return Response({
+                'error': 'Authentication service unavailable',
+                'status': 'failed',
+                'details': str(e)
+            }, status=503)
         
         # Sign in with Supabase Auth
         try:
+            # Use the correct auth method from the SDK
             auth_response = supabase.auth.sign_in_with_password({
                 "email": email,
                 "password": password
             })
-        except Exception as auth_error:
-            # Check if it's an email confirmation issue
-            if "Email not confirmed" in str(auth_error):
+            
+            if not auth_response.user or not auth_response.session:
                 return Response({
-                    'error': 'Email not confirmed',
-                    'status': 'failed',
-                    'details': 'Please check your email and click the confirmation link before logging in.'
-                }, status=400)
-            else:
-                return Response({
-                    'error': 'Login failed',
-                    'status': 'failed',
-                    'details': str(auth_error)
-                }, status=400)
-        
-        if auth_response.user and auth_response.session:
+                    'error': 'Invalid credentials',
+                    'status': 'failed'
+                }, status=401)
+            
             # Get user details from users table
             try:
                 user_details = supabase.table('users').select('*').eq('id', auth_response.user.id).execute()
                 user_data = user_details.data[0] if user_details.data else {}
             except Exception as e:
-                # Log this in production with proper logging
+                print(f"Debug - Error fetching user details: {str(e)}")
                 user_data = {}
             
             return Response({
@@ -176,13 +190,24 @@ def login(request):
                     'expires_at': auth_response.session.expires_at
                 }
             })
-        else:
-            return Response({
-                'error': 'Invalid credentials',
-                'status': 'failed'
-            }, status=401)
+            
+        except Exception as auth_error:
+            print(f"Debug - Auth error: {str(auth_error)}")
+            if "Email not confirmed" in str(auth_error):
+                return Response({
+                    'error': 'Email not confirmed',
+                    'status': 'failed',
+                    'details': 'Please check your email and click the confirmation link before logging in.'
+                }, status=400)
+            else:
+                return Response({
+                    'error': 'Login failed',
+                    'status': 'failed',
+                    'details': str(auth_error)
+                }, status=400)
             
     except Exception as e:
+        print(f"Debug - General error: {str(e)}")
         return Response({
             'error': 'Login failed',
             'status': 'failed',
@@ -334,41 +359,47 @@ class UserDetailsViewSet(viewsets.ModelViewSet):
 # Additional employee endpoints for compatibility
 @api_view(['GET'])
 def get_employees(request):
-    """Get all employees with their details"""
+    """Get all employees with their details using Supabase client"""
     try:
-        users = User.objects.prefetch_related('details').all()
+        supabase = get_supabase_client()
+        
+        # Fetch all users from the 'users' table
+        users_response = supabase.table('users').select('id, forename, lastname, Email').execute()
+        
+        if not users_response.data:
+            return Response({'employees': [], 'count': 0, 'status': 'success'})
+            
+        users_data = users_response.data
+        user_ids = [user['id'] for user in users_data]
+        
+        # Fetch all user details from the 'user_details' table
+        details_response = supabase.table('user_details').select('*').in_('user_id', user_ids).execute()
+        details_data = {item['user_id']: item for item in details_response.data}
+        
+        # Combine the data
         employees_data = []
-        
-        for user in users:
+        for user in users_data:
+            details = details_data.get(user['id'], {})
             employee = {
-                'id': user.id,
-                'email': user.email,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'profile_picture': user.profile_picture,
-                'created_at': user.created_at,
-                'updated_at': user.updated_at,
+                'id': user.get('id'),
+                'email': user.get('Email'),
+                'first_name': user.get('forename'),
+                'last_name': user.get('lastname'),
+                'profile_picture': details.get('profile_picture'),
+                'role': details.get('role'),
+                'location': details.get('location'),
+                'profile_bio': details.get('profile_bio'),
+                'office_days': details.get('office_days'),
+                'workload_status': details.get('workload_status'),
+                'today_location': details.get('today_location'),
+                'skills': details.get('skills'),
+                'interests': details.get('interests'),
+                'favorite_recipes': details.get('favorite_recipes'),
+                'recommendations': details.get('recommendations'),
+                'days_with_company': details.get('days_with_company'),
             }
-            
-            # Add details if they exist
-            if hasattr(user, 'details'):
-                details = user.details
-                employee.update({
-                    'role': details.role,
-                    'location': details.location,
-                    'profile_bio': details.profile_bio,
-                    'office_days': details.office_days,
-                    'workload_status': details.workload_status,
-                    'today_location': details.today_location,
-                    'skills': details.skills,
-                    'interests': details.interests,
-                    'favorite_recipes': details.favorite_recipes,
-                    'recommendations': details.recommendations,
-                    'days_with_company': details.days_with_company,
-                })
-            
             employees_data.append(employee)
-        
+            
         return Response({
             'employees': employees_data,
             'count': len(employees_data),
@@ -376,6 +407,7 @@ def get_employees(request):
         })
         
     except Exception as e:
+        print(f"Error in get_employees: {str(e)}") # Enhanced logging
         return Response({
             'error': 'Failed to fetch employees',
             'details': str(e),
@@ -453,6 +485,83 @@ def create_employee(request):
     except Exception as e:
         return Response({
             'error': 'Failed to create employee',
+            'details': str(e),
+            'status': 'failed'
+        }, status=500)
+
+@api_view(['GET'])
+def get_user_details(request, user_id):
+    """Get user details by user ID"""
+    try:
+        print(f"\nFetching details for user_id: {user_id}")
+        supabase = get_supabase_client()
+        
+        # Get user details from the users table
+        print("Fetching from users table...")
+        user_response = supabase.table('users').select('*').eq('id', user_id).execute()
+        print(f"Users table response: {user_response.data}")
+        
+        if not user_response.data:
+            print(f"No user found with ID: {user_id}")
+            return Response({
+                'error': 'User not found',
+                'status': 'failed'
+            }, status=404)
+            
+        user_data = user_response.data[0]
+        print(f"Found user: {user_data.get('forename')} {user_data.get('lastname')}")
+        
+        # Get additional details from user_details table
+        print("Fetching from user_details table...")
+        details_response = supabase.table('user_details').select('*').eq('user_id', user_id).execute()
+        print(f"User details response: {details_response.data}")
+        
+        details_data = details_response.data[0] if details_response.data else {}
+        
+        # If no details found, try to get basic info from employees endpoint
+        if not details_data:
+            print("No details found in user_details table, checking employees data...")
+            # Get all employees to find matching data
+            employees_response = supabase.table('employees').select('*').eq('user_id', user_id).execute()
+            if employees_response.data:
+                print("Found matching employee data")
+                details_data = employees_response.data[0]
+        
+        # Combine the data in the same format as get_employees
+        employee_data = {
+            'id': user_data.get('id'),
+            'email': user_data.get('Email'),
+            'first_name': user_data.get('forename'),
+            'last_name': user_data.get('lastname'),
+            'profile_picture': details_data.get('profile_picture'),
+            'role': details_data.get('role'),
+            'location': details_data.get('location'),
+            'profile_bio': details_data.get('profile_bio'),
+            'office_days': details_data.get('office_days', []),
+            'workload_status': details_data.get('workload_status'),
+            'today_location': details_data.get('today_location'),
+            'skills': details_data.get('skills'),
+            'interests': details_data.get('interests'),
+            'favorite_recipes': details_data.get('favorite_recipes'),
+            'recommendations': details_data.get('recommendations'),
+            'days_with_company': details_data.get('days_with_company'),
+        }
+        
+        # Check if we have minimum required data
+        if not employee_data['first_name'] or not employee_data['last_name']:
+            print("Missing required user data")
+            return Response({
+                'error': 'Incomplete user data',
+                'status': 'failed'
+            }, status=404)
+        
+        print(f"Successfully compiled user data: {employee_data}")
+        return Response(employee_data)
+        
+    except Exception as e:
+        print(f"Error in get_user_details: {str(e)}")
+        return Response({
+            'error': 'Failed to fetch user details',
             'details': str(e),
             'status': 'failed'
         }, status=500)
