@@ -118,7 +118,7 @@ const Dashboard = () => {
                 </div>
                 
                 {/* Office Floor Plan */}
-                <div className="relative w-full h-[400px] border-[3px] border-black rounded-lg overflow-hidden bg-white">
+                <div className="relative w-full h-[360px] border-[3px] border-black rounded-lg overflow-hidden bg-white">
                   {/* Top room desks - no rotation */}
                   <div className="absolute top-[30px] left-[20px] w-[80px] h-[90px] bg-gray-100 rounded-md">
                   </div>
@@ -136,8 +136,8 @@ const Dashboard = () => {
                   </div>
 
                   {/* Solid black lines */}
-                  <div className="absolute top-[200px] left-0 right-0 h-[2px] bg-black"></div>
-                  <div className="absolute top-0 right-[80px] h-[200px] w-[2px] bg-black"></div>
+                  <div className="absolute top-[180px] left-0 right-0 h-[2px] bg-black"></div>
+                  <div className="absolute top-0 right-[100px] h-[180px] w-[2px] bg-black"></div>
 
                   {/* Employee Photos with adjusted positions */}
                   {atOfficeEmployees.map((employee, index) => {
@@ -175,9 +175,9 @@ const Dashboard = () => {
               </div>
 
               {/* Right side sections */}
-              <div className="md:col-span-5 space-y-4">
+              <div className="md:col-span-5 space-y-5">
                 {/* On the road section */}
-                <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="bg-white rounded-lg p-6 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <MapPin className="w-5 h-5 text-orange-500" />
@@ -199,7 +199,7 @@ const Dashboard = () => {
                 </div>
 
                 {/* Home Office section */}
-                <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="bg-white rounded-lg p-6 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Home className="w-5 h-5 text-blue-500" />
@@ -221,7 +221,7 @@ const Dashboard = () => {
                 </div>
 
                 {/* Vacation section */}
-                <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="bg-white rounded-lg p-6 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Plane className="w-5 h-5 text-purple-500" />
@@ -243,7 +243,7 @@ const Dashboard = () => {
                 </div>
 
                 {/* Sick section */}
-                <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="bg-white rounded-lg p-6 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <HeartPulse className="w-5 h-5 text-red-500" />
