@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/apiService';
-import { Building2, User2, MapPin, Brain, Heart, UtensilsCrossed, Plane, Timer, Briefcase, Bell, Home, Search, User, LogOut, Pencil } from 'lucide-react';
+import { Building2, User2, MapPin, Brain, Heart, UtensilsCrossed, Plane, Timer, Briefcase, Bell, Home, Search, User, LogOut, Pencil, MessageCircle } from 'lucide-react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 
 const ProfileDetails = () => {
@@ -122,6 +122,24 @@ const ProfileDetails = () => {
 
   const isCurrentUser = !userId || userId === user.id;
 
+  // Hardcoded status display function
+  const getStatusDisplay = () => {
+    if (isCurrentUser) {
+      return {
+        color: 'bg-green-500',
+        text: 'Online'
+      };
+    }
+    // Hardcoded statuses for different users
+    const statusMap = {
+      'Flora': { color: 'bg-yellow-500', text: 'Away' },
+      'Christian': { color: 'bg-red-500', text: 'Busy' },
+      'Gabriel': { color: 'bg-green-500', text: 'Online' },
+      'Magda': { color: 'bg-gray-400', text: 'Offline' }
+    };
+    return statusMap[userDetails?.first_name] || { color: 'bg-gray-400', text: 'Offline' };
+  };
+
   return (
     <div className="min-h-screen bg-[#f5f7fc]">
       {/* Header */}
@@ -173,18 +191,29 @@ const ProfileDetails = () => {
 
               {/* Header with photo and name */}
               <div className="flex items-start gap-4 mb-8">
-                <img
-                  src={userDetails.profile_picture || `/user_photos/${userDetails.first_name}.png`}
-                  alt={`${userDetails.first_name} ${userDetails.last_name}`}
-                  className="w-20 h-20 rounded-full border-2 border-white shadow-sm object-cover"
-                  onError={(e) => {
-                    e.target.src = '/default-avatar.png';
-                  }}
-                />
+                <div className="relative">
+                  <img
+                    src={userDetails.profile_picture || `/user_photos/${userDetails.first_name}.png`}
+                    alt={`${userDetails.first_name} ${userDetails.last_name}`}
+                    className="w-20 h-20 rounded-full border-2 border-white shadow-sm object-cover"
+                    onError={(e) => {
+                      e.target.src = '/default-avatar.png';
+                    }}
+                  />
+                  <div className={`absolute top-0 right-0 w-4 h-4 rounded-full ${getStatusDisplay().color} border-2 border-white`}></div>
+                </div>
                 <div>
-                  <h1 className="text-xl font-medium text-gray-900">
-                    {userDetails.first_name} {userDetails.last_name}
-                  </h1>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-xl font-medium text-gray-900">
+                      {userDetails.first_name} {userDetails.last_name}
+                    </h1>
+                    {!isCurrentUser && (
+                      <MessageCircle 
+                        className="w-5 h-5 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors" 
+                        onClick={() => navigate('/')}
+                      />
+                    )}
+                  </div>
                   <div className="flex items-center gap-1.5 mt-1">
                     <Building2 className="w-4 h-4 text-gray-400" />
                     <span className="text-sm text-gray-600">{userDetails.today_location || 'Location unknown'}</span>
