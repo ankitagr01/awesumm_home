@@ -427,10 +427,10 @@ const Dashboard = () => {
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm text-gray-700">Swimlanes Vertical (Chris)</span>
-                    <span className="text-sm text-gray-500">60%</span>
+                    <span className="text-sm text-gray-500">100%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-gray-800 h-2 rounded-full" style={{ width: '60%' }}></div>
+                    <div className="bg-gray-800 h-2 rounded-full" style={{ width: '100%' }}></div>
                   </div>
                 </div>
                 
@@ -446,11 +446,51 @@ const Dashboard = () => {
                 
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-700">AuraFlows Demos (Gabriel)</span>
+                    <span className="text-sm text-gray-700">AuraFlows Demos (Flora)</span>
                     <span className="text-sm text-gray-500">16/20</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-400 h-2 rounded-full" style={{ width: '90%' }}></div>
+                    <div className="bg-green-400 h-2 rounded-full" style={{ width: '85%' }}></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-gray-700">Pilot Signing (Gabriel)</span>
+                    <span className="text-sm text-gray-500">4/10</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-blue-400 h-2 rounded-full" style={{ width: '45%' }}></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-gray-700">Workshop Script (Ankit)</span>
+                    <span className="text-sm text-gray-500">90%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-purple-400 h-2 rounded-full" style={{ width: '90%' }}></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-gray-700">Marketing leads (Magda)</span>
+                    <span className="text-sm text-gray-500">10/10</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-pink-400 h-2 rounded-full" style={{ width: '100%' }}></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-gray-700">Website Blogs (Maria)</span>
+                    <span className="text-sm text-gray-500">85%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-red-400 h-2 rounded-full" style={{ width: '85%' }}></div>
                   </div>
                 </div>
               </div>
